@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=9"/>
+            <title>Dashboard CSI</title>
+            <link rel="shortcut icon" type="image/x-icon" href="images/logo-cocacola.jpg" />           
+        </f:facet>
+        <script type="text/javascript" src="js/slideshow.js"></script>
+        <script type="text/javascript" src="js/fancyzoom.min.js"></script>
+        <script type="text/javascript" src="js/util.js"></script>        
+        <link rel="stylesheet" href="css/main.css" type="text/css" />
+    </h:head>
+    <h:body>
+        <div id="bg">
+            <div class="wrap">
+                <!-- mensaje -->
+                <div id="mainmenu">
+                    <ul id="menu">
+                        <li><a style="font-weight:bold;">Welcome</a></li>
+                    </ul>
+                </div>
+                <!-- /mensaje -->
+
+                <!-- banner -->
+                <div id="pitch">
+                    <div id="slideshow">
+
+                        <!-- 1st frame -->
+                        <div class="active">
+                            <img src="images/pitch/pitch1.jpg" alt="" />
+                            <div class="overlay transparent">
+                                <h2 alt="Acceso a Tablero">Dashboard CSI</h2>
+                                <p style="font-weight:bold;">Indicadores Cadena de Suministro e Ingenier&iacute;a</p>
+                            </div>
+                        </div>
+                        <!-- /1st frame -->
+
+                        <!-- 2nd frame -->
+                        <div>
+                            <img src="images/pitch/pitch2.jpg" alt="" />
+                            <div class="overlay transparent">
+                                <h2 alt="Acceso a Tablero">Dashboard CSI</h2>
+                                <p style="font-weight:bold;">Indicadores Cadena de Suministro e Ingenier&iacute;a</p>
+                            </div>
+                        </div>
+                        <!-- /2nd frame -->
+                    </div>
+                </div>
+                <!-- /banner -->
+
+                <!-- menu -->
+                <div id="bits">
+                    <!-- menu -->
+                    <div align="center">
+                        <h:form id="formLogin">
+                            <p:outputPanel >
+                                <p:outputLabel for="userLogin" value="User:" style="font-weight: bold;"/>
+                                <br/>
+                                <p:inputText id="userLogin"></p:inputText>
+                                <br/>
+                                <br/>
+                                <p:outputLabel for="passLogin" value="Password:"/>
+                                <br/>
+                                <p:inputText id="passLogin"></p:inputText>
+                                <br/>
+                                <br/>
+                                <p:commandButton value="Login" />
+                            </p:outputPanel>
+                        </h:form>                        
+                    </div>
+                    <!-- /menu -->
+                </div>
+                <!-- /menu -->
+            </div>
+
+        </div>
+    </h:body>
+</html>
+
