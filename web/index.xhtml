@@ -59,18 +59,20 @@
                     <!-- menu -->
                     <div align="center">
                         <h:form id="formLogin">
+                            <p:growl showDetail="true" />
                             <p:outputPanel >
                                 <p:outputLabel for="userLogin" value="User:" style="font-weight: bold;"/>
                                 <br/>
-                                <p:inputText id="userLogin"></p:inputText>
+                                <p:inputText id="userLogin" required="true" value="#{userBean.user}"></p:inputText>
                                 <br/>
                                 <br/>
-                                <p:outputLabel for="passLogin" value="Password:"/>
+                                <p:outputLabel for="passLogin" value="Password:" style="font-weight: bold;"/>
                                 <br/>
-                                <p:inputText id="passLogin"></p:inputText>
+                                <p:inputText type="password" id="passLogin" required="true" value="#{userBean.password}"></p:inputText>
                                 <br/>
                                 <br/>
-                                <p:commandButton value="Login" />
+                                <p:commandButton value="Login" action="#{userBean.logIn}" update="msgsLogin"/>
+                                <p:messages id="msgsLogin" style="width: 30%;" closable="true"/> 
                             </p:outputPanel>
                         </h:form>                        
                     </div>
@@ -80,6 +82,16 @@
             </div>
 
         </div>
+        <p:ajaxStatus style="position: fixed;display:block;bottom:120px;right: 20px;height:24px;">                
+            <f:facet name="start">
+                <p:graphicImage  value="/images/loading.gif"/>
+                <p style="font-size:14px; color: black;">
+                   Cargando...
+                </p> 
+            </f:facet>
+            <f:facet name="complete">                    
+            </f:facet>
+        </p:ajaxStatus>
     </h:body>
 </html>
 

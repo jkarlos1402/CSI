@@ -458,3 +458,7 @@ input.submit {
 #copy span { 
 	color: #999; 
 }
+
+.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only{
+    color: #b94a48;
+}

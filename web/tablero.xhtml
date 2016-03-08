@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=9"/>
+            <title>Dashboard CSI</title>
+            <link rel="shortcut icon" type="image/x-icon" href="images/logo.png" />           
+        </f:facet>
+        <script type="text/javascript" src="js/slideshow.js"></script>
+        <script type="text/javascript" src="js/fancyzoom.min.js"></script>
+        <script type="text/javascript" src="js/util.js"></script>        
+        <link rel="stylesheet" href="css/main.css" type="text/css" />
+    </h:head>
+    <h:body>      
+        <div id="bg">
+            <div class="wrap">
+                <!-- mensaje -->
+                <h:form>
+                    <div id="mainmenu">
+                        <ul id="menu">
+                            <li><a style="font-weight:bold;">Welcome #{mainBean.usuario.nombre}</a></li>
+                            <li><p:commandLink value="Exit" action="#{userBean.logout}"/></li>
+                        </ul>
+                    </div>
+                </h:form>
+                <!-- /mensaje -->
+
+                <!-- banner -->
+                <div id="pitch">
+                    <div id="slideshow">
+
+                        <!-- 1st frame -->
+                        <div class="active">
+                            <img src="images/pitch/pitch1.jpg" alt="" />
+                            <div class="overlay transparent">
+                                <h2 alt="Acceso a Tablero" onClick="window.open('http://kofmxqrbia01:8080/BOE/OpenDocument/opendoc/openDocument.jsp?sDocName=DashboardDL')">Dashboard DCS</h2>
+                                <p style="font-weight:bold;">Kof Logistics &amp; Distribution KPI's Panel</p>
+                            </div>
+                        </div>
+                        <!-- /1st frame -->
+
+                        <!-- 2nd frame -->
+                        <div>
+                            <img src="images/pitch/pitch2.jpg" alt="" />
+                            <div class="overlay transparent">
+                                <h2 onClick="window.open('http://kofmxqrbia01:8080/BOE/OpenDocument/opendoc/openDocument.jsp?sDocName=DashboardDL')">Dashboard DCS</h2>
+                                <p style="font-weight:bold;">Kof Logistics &amp; Distribution KPI's Panel</p>
+                            </div>
+                        </div>
+                        <!-- /2nd frame -->
+                    </div>
+                </div>
+                <!-- /banner -->
+
+
+
+
+
+                <!-- Opciones -->
+                <div id="bits">
+
+                    <div class="bit">
+                        <h4 style="font-weight:bold;">Load information</h4>
+                        <div >
+                            <a onClick="window.open('upload.jsp', 'uploadflatfile', 'toolbar=no,location=no,directories=no,status=no,menubar=no,resizable=YES,left=auto,top=auto,width=498,height=230')"><img src="images/thumb1.png" alt="Carga Archivo" /></a>
+                            <!--<a href="./Upload/upload.jsp"><img src="images/thumb1.png" alt="Carga Archivo" /></a>-->
+                        </div>
+                        <p align="center">Select for upload file information. (.csv)</p>
+                    </div>
+
+
+
+                    <div class="bit">
+                        <h4 style="font-weight:bold;">Validate the process status</h4>
+                        <div >
+                            <a ><img src="images/thumb2.png" alt="Validar Proceso" /></a>
+                        </div>
+                        <p align="center">See the status of the loading of information.</p>
+                    </div>
+
+
+                    <div class="bit">
+                        <h4 style="font-weight:bold;">Dashboard DCS</h4>
+                        <div >
+                            <a onClick="window.open('http://kofmxqrbia01:8080/BOE/OpenDocument/opendoc/openDocument.jsp?sDocName=DashboardDL')"><img src="images/thumb5.png" alt="BOE" /></a>
+                        </div>
+                        <p align="center">Kof Logistics &amp; Distribution KPI's Panel</p>
+                    </div>
+                    <div class="bit">
+                        <h4 style="font-weight:bold;">Portal BOE</h4>
+                        <div >
+                            <a onClick="window.open('http://kofmxqrbia01:8080/BOE/BI')"><img src="images/thumb4.png" alt="BOE" /></a>
+                        </div>
+                        <p align="center">Access to portal, creation and query reports</p>
+                    </div>
+
+
+                    <div class="line"></div>					
+
+                    <div class="bit">
+                        <img src="images/logo.png" />
+                    </div>
+
+                    <div class="clear"></div>
+                </div>
+                <!-- /Opciones -->
+
+
+
+
+            </div>
+
+        </div>
+    </h:body>
+</html>
+
