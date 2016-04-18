@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <ui:composition>                 
+            <h:form id="formCargaFlota">
+                <p:growl id="messagesLoadFileFlota" showDetail="true" />
+                <p:fileUpload fileUploadListener="#{loadBean.handleFileUploadFlota}" mode="advanced" transient="false" widgetVar="fileUploadFlota"
+                              update="formCargaFlota" sizeLimit="10000000" allowTypes="/(\.|\/)(xls|xlsx)$/" fileLimit="1"/>
+                <h3>Resume</h3>
+                <p:panel id="resumenFlota">
+                    <h:panelGrid columns="2">
+                        <h:outputText value="No records found." rendered="#{loadBean.listInfoCargaFlota.size() == 0 ? true : false}"/>
+                        <h:outputText value="Records found: " rendered="#{loadBean.listInfoCargaFlota.size()  > 0 ? true : false}"/>
+                        <h:outputText value="#{loadBean.listInfoCargaFlota.size()}" rendered="#{loadBean.listInfoCargaFlota.size()  > 0 ? true : false}"/>                                
+                    </h:panelGrid>
+                </p:panel>
+                <p:panel id="listasResumenFlota">
+                    <h:panelGrid columns="3" cellspacing="10px" style="width: 100%;" columnClasses="topElemsClass,topElemsClass,topElemsClass">
+                        <p:dataList value="#{loadBean.omittedSheetsFlota}" var="omittedSheetFlota" type="ordered">
+                            <f:facet name="header">
+                                Omitted Sheets
+                            </f:facet>
+                            #{omittedSheetFlota}
+                        </p:dataList>
+                        <p:dataList value="#{loadBean.loadedSheetsFlota}" var="loadedSheetFlota" type="ordered">
+                            <f:facet name="header">
+                                Loaded Sheets
+                            </f:facet>
+                            #{loadedSheetFlota}
+                        </p:dataList>
+                        <p:dataList value="#{loadBean.errorsFlota}" var="errorSheetFlota" type="ordered">
+                            <f:facet name="header">
+                                Errors
+                            </f:facet>
+                            #{errorSheetFlota}
+                        </p:dataList>
+                    </h:panelGrid>
+                    <f:facet name="footer">
+                        <p:commandButton id="btnSaveFlota" value="Save" actionListener="#{loadBean.saveInfoFlota}" oncomplete="PF('uploadFileFlotaDialog').hide();" rendered="#{loadBean.listInfoCargaFlota.size() > 0 ? true : false}" update=":formCargaFlota">
+                            <p:confirm message="Are you sure?" header="Save info"/>
+                        </p:commandButton>
+                    </f:facet>
+                    <p:blockUI block="formCargaFlota" trigger="btnSaveFlota">
+                        <p:graphicImage  value="/images/loading.gif"/>
+                        <p style="font-size:14px; color: black;">
+                            Cargando...
+                        </p> 
+                    </p:blockUI>
+                </p:panel>
+            </h:form>              
+        </ui:composition>
+    </h:body>
+</html>
+

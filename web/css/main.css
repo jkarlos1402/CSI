@@ -462,3 +462,7 @@ input.submit {
 .ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only{
     color: #b94a48;
 }
+
+.topElemsClass{    
+    vertical-align: top;   
+}

@@ -91,7 +91,7 @@ public class DcsRol implements Serializable {
 
     @Override
     public String toString() {
-        return "com.femsa.kof.csi.pojos.DcsRol[ pkRol=" + pkRol + " ]";
+        return rol;
     }
     
 }

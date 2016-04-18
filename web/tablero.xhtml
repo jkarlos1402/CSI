@@ -8,7 +8,7 @@
     <h:head>
         <f:facet name="first">
             <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-            <title>Dashboard CSI</title>
+            <title>Dashboard DCS</title>
             <link rel="shortcut icon" type="image/x-icon" href="images/logo.png" />           
         </f:facet>
         <script type="text/javascript" src="js/slideshow.js"></script>
@@ -29,11 +29,9 @@
                     </div>
                 </h:form>
                 <!-- /mensaje -->
-
                 <!-- banner -->
                 <div id="pitch">
                     <div id="slideshow">
-
                         <!-- 1st frame -->
                         <div class="active">
                             <img src="images/pitch/pitch1.jpg" alt="" />
@@ -43,7 +41,6 @@
                             </div>
                         </div>
                         <!-- /1st frame -->
-
                         <!-- 2nd frame -->
                         <div>
                             <img src="images/pitch/pitch2.jpg" alt="" />
@@ -56,25 +53,20 @@
                     </div>
                 </div>
                 <!-- /banner -->
-
-
-
-
-
                 <!-- Opciones -->
                 <div id="bits">
 
                     <div class="bit">
                         <h4 style="font-weight:bold;">Load information</h4>
                         <div >
-                            <a onClick="window.open('upload.jsp', 'uploadflatfile', 'toolbar=no,location=no,directories=no,status=no,menubar=no,resizable=YES,left=auto,top=auto,width=498,height=230')"><img src="images/thumb1.png" alt="Carga Archivo" /></a>
+                            <p:commandLink onclick="PF('uploadFileDialog').show();">
+                                <img src="images/thumb1.png" alt="Carga Archivo" />
+                            </p:commandLink>
+                            <!--<a onClick="window.open('upload.jsp', 'uploadflatfile', 'toolbar=no,location=no,directories=no,status=no,menubar=no,resizable=YES,left=auto,top=auto,width=498,height=230')"></a>-->
                             <!--<a href="./Upload/upload.jsp"><img src="images/thumb1.png" alt="Carga Archivo" /></a>-->
                         </div>
-                        <p align="center">Select for upload file information. (.csv)</p>
+                        <p align="center">Select for upload file information. (.xlsx or .xls)</p>
                     </div>
-
-
-
                     <div class="bit">
                         <h4 style="font-weight:bold;">Validate the process status</h4>
                         <div >
@@ -82,8 +74,6 @@
                         </div>
                         <p align="center">See the status of the loading of information.</p>
                     </div>
-
-
                     <div class="bit">
                         <h4 style="font-weight:bold;">Dashboard DCS</h4>
                         <div >
@@ -98,24 +88,64 @@
                         </div>
                         <p align="center">Access to portal, creation and query reports</p>
                     </div>
-
-
+                    <div class="bit">
+                        <h4 style="font-weight:bold;">Load Distribution Fleet</h4>
+                        <div >
+                            <p:commandLink onclick="PF('uploadFileFlotaDialog').show();">
+                                <img src="images/thumb1.png" alt="Carga Archivo" />
+                            </p:commandLink>
+                            <!--<a onClick="window.open('upload_flota.jsp', 'uploadflatfile', 'toolbar=no,location=no,directories=no,status=no,menubar=no,resizable=YES,left=auto,top=auto,width=498,height=230')"><img src="images/thumb1.png" alt="Carga Archivo" /></a>-->
+                            <!--<a href="./Upload/upload.jsp"><img src="images/thumb1.png" alt="Carga Archivo" /></a>-->
+                        </div>
+                        <p align="center">Select for upload file information. (.xlsx or .xls)</p>
+                    </div>
+                    <h:panelGroup rendered="#{'Administrator'.equalsIgnoreCase(mainBean.usuario.fkIdRol.rol) ? true : false}">
+                        <div class='line'></div>
+                        <div class='bit'>
+                            <h4 style='font-weight:bold;'>Users</h4>
+                            <div >
+                                <p:commandLink onclick="PF('usersDialog').show();">
+                                    <img src="images/user.png" alt="Users" />
+                                </p:commandLink>
+                                <!--<a onClick=\"window.open('user.jsp','uploadflatfile','toolbar=no,location=no,directories=no,status=no,menubar=no,resizable=yes,left=100,top=100,width=1366,height=1024,scrollbars=1')\"><img src='images/user.png' alt='Carga Archivo' /></a>-->
+                            </div>
+                            <p align='center'>Manage users.</p>
+                        </div><div class='bit'>
+                            <h4 style='font-weight:bold;'>Alerts</h4>
+                            <div >
+                                <p:commandLink onclick="PF('alertsDialog').show();">
+                                    <img src="images/alert.png" alt="Users" />
+                                </p:commandLink>
+                                <!--<a onClick=\"window.open('alert.jsp','uploadflatfile','toolbar=no,location=no,directories=no,status=no,menubar=no,resizable=yes,left=100,top=100,width=1364,height=800,scrollbars=1')\"><img src='images/alert.png' alt='Carga Archivo' /></a>-->
+                            </div>
+                            <p align='center'>Manage alert.</p>
+                        </div>
+                    </h:panelGroup>                    
                     <div class="line"></div>					
-
                     <div class="bit">
                         <img src="images/logo.png" />
                     </div>
-
                     <div class="clear"></div>
                 </div>
                 <!-- /Opciones -->
-
-
-
-
             </div>
-
-        </div>
+        </div>        
+        <p:dialog closeOnEscape="true" appendTo="@(body)" id="uploadFileDialog" minimizable="true" maximizable="true" header="Upload file" widgetVar="uploadFileDialog" minHeight="200" width="50%" showEffect="fade" hideEffect="fade" dynamic="true" style="background-image: url('images/background_v.jpg'); background-size: 100%;">
+            <ui:include src="WEB-INF/pages/loadFile.xhtml"/>
+        </p:dialog>
+        <p:dialog closeOnEscape="true" appendTo="@(body)" id="uploadFileFlotaDialog" minimizable="true" maximizable="true" header="Upload Distribution Fleet file" widgetVar="uploadFileFlotaDialog" minHeight="200" width="50%" showEffect="fade" hideEffect="fade" dynamic="true" style="background-image: url('images/background_v.jpg'); background-size: 100%;">
+            <ui:include src="WEB-INF/pages/loadFileFlota.xhtml"/>
+        </p:dialog>
+        <p:dialog closeOnEscape="true" appendTo="@(body)" id="usersDialog" minimizable="true" maximizable="true" header="Users" widgetVar="usersDialog" minHeight="200" width="80%" minWidth="1050" showEffect="fade" hideEffect="fade" dynamic="true" style="background-image: url('images/background_v.jpg'); background-size: 100%;">
+            <ui:include src="WEB-INF/pages/users.xhtml"/>
+        </p:dialog>
+        <p:dialog closeOnEscape="true" appendTo="@(body)" id="alertsDialog" minimizable="true" maximizable="true" header="Alerts" widgetVar="alertsDialog" minHeight="200" width="50%" showEffect="fade" hideEffect="fade" dynamic="true" style="background-image: url('images/background_v.jpg'); background-size: 100%;">
+            <ui:include src="WEB-INF/pages/alerts.xhtml"/>
+        </p:dialog>
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >
+            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+        </p:confirmDialog>        
     </h:body>
 </html>
 

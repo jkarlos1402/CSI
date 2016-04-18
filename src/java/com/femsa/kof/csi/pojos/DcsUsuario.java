@@ -13,6 +13,9 @@ import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -20,6 +23,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -38,6 +42,8 @@ public class DcsUsuario implements Serializable {
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
     @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_USUARIO")
+    @SequenceGenerator(name = "SEQ_USUARIO", sequenceName = "SEQ_USUARIO", allocationSize = 1) 
     @Column(name = "PK_USUARIO")
     private Integer pkUsuario;
     @Column(name = "USUARIO")
@@ -64,9 +70,9 @@ public class DcsUsuario implements Serializable {
         @JoinColumn(name = "ID_PROYECTO", referencedColumnName = "ID_PROYECTO")})
     @ManyToMany
     private List<DcsCatProyecto> dcsCatProyectoList;
-    @JoinColumn(name = "FK_ID_ROL", referencedColumnName = "PK_ROL")
-    @ManyToOne
-    private DcsRol fkIdRol;    
+    @JoinColumn(name = "FK_ID_ROL")
+    @ManyToOne(fetch = FetchType.EAGER)
+    private DcsRol fkIdRol;
 
     public Integer getPkUsuario() {
         return pkUsuario;
@@ -86,7 +92,7 @@ public class DcsUsuario implements Serializable {
 
     public String getPassword() {
         EncrypterKOF encrypterKOF = new EncrypterKOF();
-        return encrypterKOF.decrypt(password);
+        return password != null ? encrypterKOF.decrypt(password) : password;
     }
 
     public void setPassword(String password) {
@@ -190,5 +196,5 @@ public class DcsUsuario implements Serializable {
     public String toString() {
         return nombre;
     }
-    
+
 }

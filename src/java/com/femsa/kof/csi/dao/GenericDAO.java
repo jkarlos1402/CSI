@@ -146,8 +146,7 @@ public class GenericDAO implements GenericDaoInterface {
     }
 
     @Override
-    public <T extends Serializable> void saveOrUpdateAll(
-            final List<T> instances) throws DAOException {
+    public <T extends Serializable> void saveOrUpdateAll(final List<T> instances) throws DAOException {
         try {
             tx = session.beginTransaction();
             if (instances != null) {
@@ -156,7 +155,7 @@ public class GenericDAO implements GenericDaoInterface {
                 }
             }
             tx.commit();
-        } catch (HibernateException e) {
+        } catch (HibernateException e) {            
             throw new DAOException("Error: entidad no conocida o no válida, " + e.getMessage());
         } catch (IllegalArgumentException e2) {
             throw new DAOException("Error: entidad no conocida o no válida, " + e2.getMessage());
@@ -200,7 +199,7 @@ public class GenericDAO implements GenericDaoInterface {
     }
 
     @Override
-    public <T extends Serializable> List< T> findByComponent(
+    public <T extends Serializable> List<T> findByComponent(
             final Class clase,
             final String columna,
             final String valor) throws DAOException {
@@ -234,10 +233,12 @@ public class GenericDAO implements GenericDaoInterface {
                 sql = session.createSQLQuery(sqlNative);
                 sql.executeUpdate();
             } else {
-                throw new DAOException("Error: sentencia sql no válida");
+                throw new DAOException("Error, can not excecute sentence: "+sqlNative);
             }
         } catch (HibernateException e) {
-            throw new DAOException("Error: no se puede ejecutar DDL, " + e.getMessage());
+            sql = session.createSQLQuery("ROLLBACK");
+            sql.executeUpdate();
+            throw new DAOException("Error, can not excecute sentence: " + e.getMessage());
         } finally {
             session.flush();
         }

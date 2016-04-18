@@ -3,17 +3,17 @@
 <hibernate-configuration>
     <session-factory>
         
-         <property name="hibernate.dialect">org.hibernate.dialect.OracleDialect</property>
+<!--         <property name="hibernate.dialect">org.hibernate.dialect.OracleDialect</property>
         <property name="hibernate.connection.driver_class">oracle.jdbc.OracleDriver</property>
         <property name="hibernate.connection.url">jdbc:oracle:thin:@localhost:1521:XE</property>
         <property name="hibernate.connection.username">kofuser</property>
-        <property name="hibernate.connection.password">kofuser</property>  
+        <property name="hibernate.connection.password">kofuser</property>  -->
     
-        <!-- <property name="hibernate.dialect">org.hibernate.dialect.OracleDialect</property>
+         <property name="hibernate.dialect">org.hibernate.dialect.OracleDialect</property>
         <property name="hibernate.connection.driver_class">oracle.jdbc.OracleDriver</property>
         <property name="hibernate.connection.url">jdbc:oracle:thin:@10.138.3.32:1527:DSE</property>
         <property name="hibernate.connection.username">BOE14DEVHA</property>
-        <property name="hibernate.connection.password">temporal</property> -->
+        <property name="hibernate.connection.password">temporal</property> 
     
         <!-- <property name="hibernate.dialect">org.hibernate.dialect.OracleDialect</property>
         <property name="hibernate.connection.driver_class">oracle.jdbc.OracleDriver</property>
@@ -50,9 +50,12 @@
         <property name="show_sql">false</property>
         <property name="format_sql">false</property>
         <property name="current_session_context_class">thread</property>    
+        <mapping class="com.femsa.kof.csi.pojos.DcsCatPais"/>
         <mapping class="com.femsa.kof.csi.pojos.DcsUsuario"/>
         <mapping class="com.femsa.kof.csi.pojos.DcsRol"/>
         <mapping class="com.femsa.kof.csi.pojos.DcsCatProyecto"/>
+        <mapping class="com.femsa.kof.csi.pojos.Xtmpinddl"/>
+        <mapping class="com.femsa.kof.csi.pojos.XtmpinddlFlota"/>
         
     </session-factory>
 </hibernate-configuration>

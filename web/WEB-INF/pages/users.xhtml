@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <ui:composition>                 
+            <h:form id="formUsers">
+                <p:growl id="messagesUsers" showDetail="true" />                
+                <p:messages showDetail="true" closable="true"/>
+                <h:panelGrid columns="6"  cellspacing="10px">                        
+                    <p:outputLabel for="userLogin" value="User:" />
+                    <p:inputText id="userLogin" required="true" value="#{userBean.usuarioNuevo.usuario}" maxlength="1024"/>
+
+                    <p:outputLabel for="passLoginUser" value="Password:" />                                               
+                    <p:inputText id="passLoginUser" value="#{userBean.usuarioNuevo.password}" type="password"  required="true" label="Password" maxlength="80"/>                     
+
+                    <p:outputLabel for="userName" value="Name:" />
+                    <p:inputText id="userName" required="true" value="#{userBean.usuarioNuevo.nombre}" maxlength="60"/>
+
+                    <p:outputLabel for="userCountry" value="Country:" />
+                    <p:selectOneMenu id="userCountry" immediate="true" value="#{userBean.paisSelected}" style="width:125px"  required="true" converter="genericConverter" label="Country">
+                        <f:selectItem itemLabel="Select One" itemValue="" />
+                        <f:selectItems value="#{userBean.catPaises}" />                             
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="userMail" value="Mail:" />
+                    <p:inputText id="userMail" required="true" value="#{userBean.usuarioNuevo.mail}" maxlength="60" label="Mail"/>
+
+                    <p:outputLabel for="userRol" value="Rol:" />
+                    <p:selectOneMenu id="userRol" immediate="true" value="#{userBean.usuarioNuevo.fkIdRol}" style="width:125px" converter="genericConverter" required="true" label="Rol">
+                        <f:selectItem itemLabel="Select One" itemValue="" />
+                        <f:selectItems value="#{userBean.catRoles}" />                             
+                    </p:selectOneMenu>
+                    <f:facet name="footer">
+                        <h:panelGrid columns="3" cellspacing="10px">
+                            <p:commandButton value="Save" update="formUsers" actionListener="#{userBean.saveUser}">
+                                <p:confirm message="Are you sure?" header="Save user"/>
+                            </p:commandButton>
+                            <p:commandButton value="Delete" update="formUsers" actionListener="#{userBean.deleteUser}" rendered="#{userBean.usuarioNuevo.pkUsuario ne null and !userBean.usuarioNuevo.equals(mainBean.usuario) ? true : false}">
+                                <p:confirm message="Are you sure?" header="Delete user"/>
+                            </p:commandButton>
+                            <p:commandButton value="New" update="formUsers" actionListener="#{userBean.newUser}" rendered="#{userBean.usuarioNuevo.pkUsuario ne null ? true : false}"/>                                
+                        </h:panelGrid>
+                    </f:facet>
+                </h:panelGrid>
+                <h:panelGrid columns="1"  cellspacing="10px">
+                    <p:dataTable widgetVar="tableUsers" id="tableUsers" var="userTable" value="#{userBean.usuariosAll}" rowKey="#{userTable.pkUsuario}" selection="#{userBean.usuarioSelected}" selectionMode="single" paginator="true" rows="10">
+                        <p:column headerText="User">
+                            <h:outputText value="#{userTable.usuario}"/>
+                        </p:column>
+                        <p:column headerText="Name">
+                            <h:outputText value="#{userTable.nombre}"/>
+                        </p:column>                            
+                        <p:column headerText="Country">
+                            <h:outputText value="#{userTable.pais}"/>
+                        </p:column>
+                        <p:column headerText="Mail">
+                            <h:outputText value="#{userTable.mail}"/>
+                        </p:column>
+                        <p:column headerText="Rol">
+                            <h:outputText value="#{userTable.fkIdRol.rol}"/>
+                        </p:column>                                                    
+                        <p:ajax event="rowSelect" update=":formUsers" listener="#{userBean.selectUser}"/>
+                    </p:dataTable>
+                    <p:blockUI block="tableUsers" trigger="btnRefreshUsers">
+                        <p:graphicImage  value="/images/loading.gif"/>
+                        <p style="font-size:14px; color: black;">
+                            Cargando...
+                        </p> 
+                    </p:blockUI>
+                    <f:facet name="footer">
+                        <p:commandButton widgetVar="btnRefreshUsers" id="btnRefreshUsers" value="Refresh" update=":formUsers:tableUsers" actionListener="#{userBean.refreshUsers}"/>
+                    </f:facet>
+                </h:panelGrid>
+            </h:form>              
+        </ui:composition>
+    </h:body>
+</html>
+
