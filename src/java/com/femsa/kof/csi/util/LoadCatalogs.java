@@ -8,6 +8,7 @@ package com.femsa.kof.csi.util;
 import com.femsa.kof.csi.dao.GenericDAO;
 import com.femsa.kof.csi.exception.DAOException;
 import com.femsa.kof.csi.exception.DataBaseException;
+import com.femsa.kof.csi.pojos.DcsCatIndicadores;
 import com.femsa.kof.csi.pojos.DcsCatPais;
 import java.util.List;
 import java.util.logging.Level;
@@ -25,19 +26,25 @@ public class LoadCatalogs {
         GenericDAO genericDAO = null;
         ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
         List<DcsCatPais> paises;
+        List<DcsCatIndicadores> indicadores;
         try {
             genericDAO = new GenericDAO();
             paises = genericDAO.findAll(DcsCatPais.class);
-            System.out.println("de base se ");
             context.setAttribute("catalogo_paises", paises);
+            indicadores = genericDAO.findAll(DcsCatIndicadores.class);
+            context.setAttribute("catalogo_indicadores", indicadores);
         } catch (DAOException ex) {
             context.setAttribute("catalogo_paises", null);
+            context.setAttribute("catalogo_indicadores", null);
             Logger.getLogger(LoadCatalogs.class.getName()).log(Level.SEVERE, null, ex);
         } catch (DataBaseException ex) {
             context.setAttribute("catalogo_paises", null);
+            context.setAttribute("catalogo_indicadores", null);
             Logger.getLogger(LoadCatalogs.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            genericDAO.closeDAO();
+            if (genericDAO != null) {
+                genericDAO.closeDAO();
+            }
         }
 
     }

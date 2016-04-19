@@ -7,7 +7,7 @@ package com.femsa.kof.csi.pojos;
 
 import com.femsa.kof.csi.util.EncrypterKOF;
 import java.io.Serializable;
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
@@ -23,10 +23,13 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 /**
  *
@@ -73,7 +76,19 @@ public class DcsUsuario implements Serializable {
     @JoinColumn(name = "FK_ID_ROL")
     @ManyToOne(fetch = FetchType.EAGER)
     private DcsRol fkIdRol;
+    
+    @OneToMany(mappedBy = "idUsuario", fetch = FetchType.EAGER)
+    @Cascade(CascadeType.DELETE)
+    private List<DcsAlerta> listaAlertas = new ArrayList<DcsAlerta>();
 
+    public List<DcsAlerta> getListaAlertas() {
+        return listaAlertas;
+    }
+
+    public void setListaAlertas(List<DcsAlerta> listaAlertas) {
+        this.listaAlertas = listaAlertas;
+    }
+    
     public Integer getPkUsuario() {
         return pkUsuario;
     }

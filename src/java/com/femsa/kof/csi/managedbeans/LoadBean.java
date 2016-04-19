@@ -9,6 +9,7 @@ import com.femsa.kof.csi.dao.GenericDAO;
 import com.femsa.kof.csi.exception.DAOException;
 import com.femsa.kof.csi.exception.DCSException;
 import com.femsa.kof.csi.exception.DataBaseException;
+import com.femsa.kof.csi.pojos.DcsCatIndicadores;
 import com.femsa.kof.csi.pojos.DcsCatPais;
 import com.femsa.kof.csi.pojos.DcsUsuario;
 import com.femsa.kof.csi.pojos.Xtmpinddl;
@@ -17,6 +18,7 @@ import com.femsa.kof.csi.util.LoadCatalogs;
 import com.femsa.kof.csi.util.ScriptAnalizer;
 import com.femsa.kof.csi.util.XlsAnalizer;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.faces.application.FacesMessage;
@@ -33,7 +35,7 @@ import org.primefaces.event.FileUploadEvent;
  */
 @ManagedBean
 @ViewScoped
-public class LoadBean {
+public class LoadBean implements Serializable{
 
     private List<Xtmpinddl> listInfoCargaIndi;
 
@@ -138,9 +140,17 @@ public class LoadBean {
             LoadCatalogs.load();
             paises = (List<DcsCatPais>) context.getAttribute("catalogo_paises");
         }
+        Object objetoIndi = context.getAttribute("catalogo_indicadores");
+        List<DcsCatIndicadores> indicadores;
+        if (objetoIndi != null) {            
+            indicadores = (List<DcsCatIndicadores>) objetoIndi;
+        } else {            
+            LoadCatalogs.load();
+            indicadores = (List<DcsCatIndicadores>) context.getAttribute("catalogo_indicadores");
+        }
         try {
             XlsAnalizer analizer = new XlsAnalizer();
-            listInfoCargaIndi = analizer.analizeXlsIndi(event.getFile(), usuario, paises != null ? paises : new ArrayList<DcsCatPais>());
+            listInfoCargaIndi = analizer.analizeXlsIndi(event.getFile(), usuario, paises != null ? paises : new ArrayList<DcsCatPais>(),indicadores != null ? indicadores : new ArrayList<DcsCatIndicadores>());
             omittedSheets = analizer.getOmittedSheets();
             loadedSheets = analizer.getLoadedSheets();
             errors = analizer.getErrors();
@@ -211,12 +221,10 @@ public class LoadBean {
         ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
         Object objeto = context.getAttribute("catalogo_paises");
         List<DcsCatPais> paises;
-        if (objeto != null) {
-            System.out.println("si es diferente de nulo");
+        if (objeto != null) {            
             paises = (List<DcsCatPais>) objeto;
             System.out.println(paises.size());
-        } else {
-            System.out.println("es nulo");
+        } else {            
             LoadCatalogs.load();
             paises = (List<DcsCatPais>) context.getAttribute("catalogo_paises");
         }

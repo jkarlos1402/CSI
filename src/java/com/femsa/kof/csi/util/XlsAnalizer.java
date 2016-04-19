@@ -6,6 +6,7 @@
 package com.femsa.kof.csi.util;
 
 import com.femsa.kof.csi.exception.DCSException;
+import com.femsa.kof.csi.pojos.DcsCatIndicadores;
 import com.femsa.kof.csi.pojos.DcsCatPais;
 import com.femsa.kof.csi.pojos.DcsUsuario;
 import com.femsa.kof.csi.pojos.Xtmpinddl;
@@ -67,7 +68,7 @@ public class XlsAnalizer {
         this.errors = errors;
     }
 
-    public List<Xtmpinddl> analizeXlsIndi(UploadedFile file, final DcsUsuario usuario, List<DcsCatPais> paises) throws DCSException {
+    public List<Xtmpinddl> analizeXlsIndi(UploadedFile file, final DcsUsuario usuario, List<DcsCatPais> paises, List<DcsCatIndicadores> indicadores) throws DCSException {
         Workbook excelXLS = null;
         List<Xtmpinddl> listaCarga = null;
         try {
@@ -83,7 +84,7 @@ public class XlsAnalizer {
                 Sheet sheet = excelXLS != null ? excelXLS.getSheetAt(i) : null;
                 rowIterator = sheet != null ? sheet.iterator() : null;
                 if (sheet != null && i == 0) {
-                    listaCarga = this.analizeSheetIndi(rowIterator, usuario, sheet.getSheetName(), paises);
+                    listaCarga = this.analizeSheetIndi(rowIterator, usuario, sheet.getSheetName(), paises, indicadores);
                     if (!listaCarga.isEmpty()) {
                         loadedSheets.add(sheet.getSheetName().trim().toUpperCase());
                     } else {
@@ -119,7 +120,7 @@ public class XlsAnalizer {
      * @return Regresa una lista con los registros a ser almacenados en base de
      * datos
      */
-    private List<Xtmpinddl> analizeSheetIndi(Iterator<Row> rowIterator, DcsUsuario usuario, String sheetName, List<DcsCatPais> paises) throws DCSException {
+    private List<Xtmpinddl> analizeSheetIndi(Iterator<Row> rowIterator, DcsUsuario usuario, String sheetName, List<DcsCatPais> paises, List<DcsCatIndicadores> indicadores) throws DCSException {
         int numRow = 0;
         List<Xtmpinddl> cargas = new ArrayList<Xtmpinddl>();
         Xtmpinddl indi;
@@ -168,7 +169,13 @@ public class XlsAnalizer {
                 }
                 cell = row.getCell(2);
                 if (cell == null || cell.getCellType() == Cell.CELL_TYPE_STRING) {
-                    indi.setIndicador(cell != null ? cell.getStringCellValue().trim() : null);
+                    if (indicadores.contains(new DcsCatIndicadores(cell != null ? cell.getStringCellValue().trim() : null))) {
+                        indi.setIndicador(cell != null ? cell.getStringCellValue().trim() : null);
+                    }else {
+                        errors.add("Approximately " + Character.toString((char) (65 + 2)) + "" + (numRow + 1) + " cell in " + sheetName + " sheet have a invalid value [" + cell + "], indicator not found.");
+                        cargas.clear();
+                        break;
+                    }
                 } else {
                     errors.add("Approximately " + Character.toString((char) (65 + 2)) + "" + (numRow + 1) + " cell in " + sheetName + " sheet have a invalid value [" + cell + "].");
                     cargas.clear();

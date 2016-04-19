@@ -9,11 +9,108 @@
         <title>Facelet Title</title>
     </h:head>
     <h:body>
-        <ui:composition>                 
-            <h:form id="formAlerts">
-                <p:growl id="messagesAlerts" showDetail="true" />
-                
-            </h:form>              
+        <ui:composition>   
+            <h:form id="formAlerts">               
+                <p:growl id="messagesAlerts" showDetail="true" />                
+                <h:panelGrid columns="4"  cellspacing="10px" width="100%" columnClasses="etiquetaCSS,valorCSS,etiquetaCSS,valorCSS">                        
+
+                    <p:outputLabel for="responsible" value="Responsible:" />
+                    <p:selectOneMenu id="responsible" value="#{alertBean.alertaNueva.idUsuario}" style="width:90%"  required="true" converter="genericConverter" label="Responsible">
+                        <f:selectItem itemLabel="Select One" itemValue="" />
+                        <f:selectItems value="#{alertBean.usuariosAll}" />                             
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="periodo" value="Day (ex:01):" />
+                    <p:selectOneMenu id="periodo" required="true" value="#{alertBean.alertaNueva.periodo}" style="width:90%">
+                        <f:selectItem itemLabel="Select One" itemValue="" />                        
+                        <f:selectItems value="#{alertBean.numDiasMes}"/>                        
+                    </p:selectOneMenu>
+                    
+
+                    <p:outputLabel for="boss1name" value="Boss 1 name:" />                                               
+                    <p:inputText id="boss1name" value="#{alertBean.alertaNueva.jefe1Nombre}" required="true" label="Boss 1 name" maxlength="60" style="width: 100%"/>                     
+
+                    <p:outputLabel for="boss1mail" value="Boss 1 email:" />
+                    <p:inputText id="boss1mail" required="true" value="#{alertBean.alertaNueva.jefe1Correo}" maxlength="60" style="width: 100%" validatorMessage="Invalid email format">
+                        <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+                    </p:inputText>
+
+                    <p:outputLabel for="boss2name" value="Boss 2 name:" />                                               
+                    <p:inputText id="boss2name" value="#{alertBean.alertaNueva.jefe2Nombre}" required="true" label="Boss 1 name" maxlength="60" style="width: 100%" />                     
+
+                    <p:outputLabel for="boss2mail" value="Boss 2 email:" />
+                    <p:inputText id="boss2mail" required="true" value="#{alertBean.alertaNueva.jefe2Correo}" maxlength="60" style="width: 100%" validatorMessage="Invalid email format">
+                        <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+                    </p:inputText>
+
+                    <p:outputLabel for="boss3name" value="Boss 3 name:" />                                               
+                    <p:inputText id="boss3name" value="#{alertBean.alertaNueva.jefe3Nombre}" required="true" label="Boss 1 name" maxlength="60" style="width: 100%"/>                     
+
+                    <p:outputLabel for="boss3mail" value="Boss 3 email:" />
+                    <p:inputText id="boss3mail" required="true" value="#{alertBean.alertaNueva.jefe3Correo}" maxlength="60" style="width: 100%" validatorMessage="Invalid email format">
+                        <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+                    </p:inputText>                    
+
+                </h:panelGrid>
+                <h:panelGrid columns="1" cellspacing="10px" width="100%" columnClasses="valorCSS">
+                    <p:outputLabel for="message" value="Message:" />
+                    <p:inputTextarea cols="30" id="message" required="true" value="#{alertBean.alertaNueva.mensaje}" maxlength="400" autoResize="false" style="width: 100%; height: 58px; overflow-y: auto !important;" />
+
+                    <f:facet name="footer">
+                        <h:panelGrid columns="3" cellspacing="10px">
+                            <p:commandButton value="Save" update="formAlerts" actionListener="#{alertBean.saveAlerta}">
+                                <p:confirm message="Are you sure?" header="Save alert"/>
+                            </p:commandButton>
+                            <p:commandButton value="Delete" update="formAlerts" actionListener="#{alertBean.deleteAlerta}" rendered="#{alertBean.alertaNueva.pkAlerta ne null ? true : false}">
+                                <p:confirm message="Are you sure?" header="Delete alert"/>
+                            </p:commandButton>
+                            <p:commandButton value="New" update="formAlerts" actionListener="#{alertBean.newAlerta}" rendered="#{alertBean.alertaNueva.pkAlerta ne null ? true : false}"/>                                
+                        </h:panelGrid>
+                    </f:facet>
+                </h:panelGrid>
+                <p:separator/>
+                <h:panelGrid columns="1"  cellspacing="10px">
+                    <p:dataTable widgetVar="tableAlerts" id="tableAlerts" var="userAlert" value="#{alertBean.alertasAll}" rowKey="#{userAlert.pkAlerta}" selection="#{alertBean.alertaSeleccionada}" selectionMode="single" scrollRows="20" scrollable="true" liveScroll="true" scrollHeight="150" style="margin-bottom:0">
+                        <p:column headerText="Responsible">
+                            <h:outputText value="#{userAlert.idUsuario.nombre}"/>
+                        </p:column>
+                        <p:column headerText="Boss 1 name">
+                            <h:outputText value="#{userAlert.jefe1Nombre}"/>
+                        </p:column>                            
+                        <p:column headerText="Boss 1 email">
+                            <h:outputText value="#{userAlert.jefe1Correo}"/>
+                        </p:column>                            
+                        <p:column headerText="Boss 2 name">
+                            <h:outputText value="#{userAlert.jefe2Nombre}"/>
+                        </p:column>                            
+                        <p:column headerText="Boss 2 email">
+                            <h:outputText value="#{userAlert.jefe2Correo}"/>
+                        </p:column>                            
+                        <p:column headerText="Boss 3 name">
+                            <h:outputText value="#{userAlert.jefe3Nombre}"/>
+                        </p:column>                            
+                        <p:column headerText="Boss 3 email">
+                            <h:outputText value="#{userAlert.jefe3Correo}"/>
+                        </p:column>                            
+                        <p:column headerText="Period">
+                            <h:outputText value="#{userAlert.periodo}"/>
+                        </p:column>                            
+                        <p:column headerText="Message">
+                            <h:outputText value="#{userAlert.mensaje.length() > 40 ? userAlert.mensaje.subSequence(0, 40).concat('...') : userAlert.mensaje}"/>
+                        </p:column>                                                                                                      
+                        <p:ajax event="rowSelect" update=":formAlerts" listener="#{alertBean.selectAlerta}"/>
+                    </p:dataTable>
+                    <p:blockUI block="tableAlerts" trigger="btnRefreshAlerts">
+                        <p:graphicImage  value="/images/loading.gif"/>
+                        <p style="font-size:14px; color: black;">
+                            Cargando...
+                        </p> 
+                    </p:blockUI>
+                    <f:facet name="footer">
+                        <p:commandButton widgetVar="btnRefreshAlerts" id="btnRefreshAlerts" value="Refresh" update=":formAlerts:tableAlerts" actionListener="#{alertBean.refreshAlertas}"/>
+                    </f:facet>
+                </h:panelGrid>                
+            </h:form>
         </ui:composition>
     </h:body>
 </html>

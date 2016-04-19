@@ -466,3 +466,11 @@ input.submit {
 .topElemsClass{    
     vertical-align: top;   
 }
+
+.etiquetaCSS{
+    text-align: right;
+}
+
+.valorCSS{
+    text-align: left;
+}

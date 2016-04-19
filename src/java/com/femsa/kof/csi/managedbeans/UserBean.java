@@ -325,7 +325,7 @@ public class UserBean implements Serializable {
         try {
             genericDAO = new GenericDAO();
             usuarios = genericDAO.findByComponent(DcsUsuario.class, "usuario", usuarioNuevo.getUsuario());
-            if (usuarios != null) {
+            if (usuarios != null && !usuarios.isEmpty()) {
                 usuarioOld = usuarios.get(0);
             }
             if (usuarioOld != null && !usuarioOld.getPkUsuario().equals(usuarioNuevo.getPkUsuario())) {

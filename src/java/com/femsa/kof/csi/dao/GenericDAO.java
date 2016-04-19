@@ -120,7 +120,7 @@ public class GenericDAO implements GenericDaoInterface {
             tx = session.beginTransaction();
             session.saveOrUpdate(instance);
             tx.commit();
-        } catch (HibernateException e) {
+        } catch (HibernateException e) {            
             String message;
             message = e.getMessage();
             throw new DAOException("Error al guardar la entidad: entidad no conocida o no válida, " + message);
