@@ -202,7 +202,7 @@ public class GenericDAO implements GenericDaoInterface {
     public <T extends Serializable> List<T> findByComponent(
             final Class clase,
             final String columna,
-            final String valor) throws DAOException {
+            final Object valor) throws DAOException {
         List<T> elementos = null;
         Query queryHql;
         try {

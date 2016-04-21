@@ -35,8 +35,8 @@
                         <div class="active">
                             <img src="images/pitch/pitch1.jpg" alt="" />
                             <div class="overlay transparent">
-                                <h2 alt="Acceso a Tablero">Dashboard CSI</h2>
-                                <p style="font-weight:bold;">Indicadores Cadena de Suministro e Ingenier&iacute;a</p>
+                                <h2 alt="Acceso a Tablero">Dashboard DCS</h2>
+                                <p style="font-weight:bold;">Kof Logistics &amp; Distribution KPI's</p>
                             </div>
                         </div>
                         <!-- /1st frame -->
@@ -45,8 +45,8 @@
                         <div>
                             <img src="images/pitch/pitch2.jpg" alt="" />
                             <div class="overlay transparent">
-                                <h2 alt="Acceso a Tablero">Dashboard CSI</h2>
-                                <p style="font-weight:bold;">Indicadores Cadena de Suministro e Ingenier&iacute;a</p>
+                                <h2 alt="Acceso a Tablero">Dashboard DCS</h2>
+                                <p style="font-weight:bold;">Kof Logistics &amp; Distribution KPI's</p>
                             </div>
                         </div>
                         <!-- /2nd frame -->
@@ -63,15 +63,15 @@
                             <p:outputPanel >
                                 <p:outputLabel for="userLogin" value="User:" style="font-weight: bold;"/>
                                 <br/>
-                                <p:inputText id="userLogin" required="true" value="#{userBean.user}"></p:inputText>
+                                <p:inputText id="userLogin" required="true" value="#{loginBean.user}"></p:inputText>
                                 <br/>
                                 <br/>
                                 <p:outputLabel for="passLogin" value="Password:" style="font-weight: bold;"/>
                                 <br/>
-                                <p:inputText type="password" id="passLogin" required="true" value="#{userBean.password}"></p:inputText>
+                                <p:inputText type="password" id="passLogin" required="true" value="#{loginBean.password}"></p:inputText>
                                 <br/>
                                 <br/>
-                                <p:commandButton value="Login" action="#{userBean.logIn}" update="msgsLogin"/>
+                                <p:commandButton value="Login" action="#{loginBean.logIn}" update="msgsLogin"/>
                                 <p:messages id="msgsLogin" style="width: 30%;" closable="true"/> 
                             </p:outputPanel>
                         </h:form>                        

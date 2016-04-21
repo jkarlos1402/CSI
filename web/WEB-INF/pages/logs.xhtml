@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <ui:composition>                 
+            <h:form id="formLog">
+                <p:panel id="panelLog">   
+                    <h:panelGrid columns="1" cellpadding="5px">
+                        <p:dataTable var="log" value="#{processStatusBean.listaCargas}" scrollRows="3" liveScroll="true" scrollHeight="150" style="margin-bottom:0">
+                            <f:facet name="header">
+                                Uploads status
+                            </f:facet>
+                            <p:column style="width:16px">
+                                <p:rowToggler />
+                            </p:column>
+                            <p:column headerText="File name">
+                                <h:outputText value="#{log.nombreArchivo}" />
+                            </p:column>
+                            <p:column headerText="Process name" filterBy="#{log.nombreProceso}" filterMatchMode="contains">
+                                <h:outputText value="#{log.nombreProceso}" />
+                            </p:column>
+                            <p:column headerText="Date" sortBy="#{log.fechaEjecucion}">
+                                <h:outputText value="#{processStatusBean.dateFormat.format(log.fechaEjecucion)}" />
+                            </p:column>
+                            <p:column headerText="Country" sortBy="#{log.pais}" rendered="#{processStatusBean.usuario.fkIdRol.rol eq 'Administrator' ? true : false}">
+                                <h:outputText value="#{log.pais}" />
+                            </p:column>
+                            <p:column headerText="User" rendered="#{processStatusBean.usuario.fkIdRol.rol eq 'Administrator' ? true : false}">
+                                <h:outputText value="#{log.idUsuario}" />
+                            </p:column>
+                            <p:column headerText="Status">
+                                <p:graphicImage  value="#{log.estatus eq 'Successful' ? '/images/successful.png' : '/images/failed.png'}" styleClass="imagenIcono"/>
+                                <h:outputText value="#{log.estatus}" />
+                            </p:column>
+
+                            <p:rowExpansion>
+                                <p:panelGrid  columns="2" columnClasses="etiquetaCSS,valorCSS" style="width:100%">
+                                    <f:facet name="header">
+                                        <h:outputText value="Details"/>
+                                    </f:facet>                                   
+
+                                    <h:outputText value="Process:" />
+                                    <h:outputText value="#{log.nombreProceso}" />
+
+                                    <h:outputText value="File name:" />
+                                    <h:outputText value="#{log.nombreArchivo}" />
+
+                                    <h:outputText value="Execution date:" />
+                                    <h:outputText value="#{processStatusBean.dateFormat.format(log.fechaEjecucion)}"/>
+
+                                    <h:outputText value="Data Entries:" />
+                                    <h:outputText value="#{log.registrosProcesados}" />
+
+                                    <h:outputText value="Start:" />
+                                    <h:outputText value="#{processStatusBean.dateTimeFormat.format(log.inicioEjecucion)}" />
+
+                                    <h:outputText value="End:" />
+                                    <h:outputText value="#{processStatusBean.dateTimeFormat.format(log.finEjecucion)}" />
+                                </p:panelGrid>
+                            </p:rowExpansion>
+                        </p:dataTable>
+                        <p:separator/>
+                        <f:facet name="footer">
+                            <p:commandButton value="Refresh" actionListener="#{processStatusBean.refreshListLog}" update="panelLog"/>
+                        </f:facet>
+                    </h:panelGrid>                      
+                </p:panel>
+            </h:form>              
+        </ui:composition>
+    </h:body>
+</html>
+

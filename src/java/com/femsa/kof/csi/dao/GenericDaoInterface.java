@@ -25,7 +25,7 @@ public interface GenericDaoInterface {
 
     public <T extends Serializable> List<T> findByQuery(Class clase, String query) throws DAOException;
 
-    public <T extends Serializable> List<T> findByComponent(Class clase, String columna, String valor) throws DAOException;
+    public <T extends Serializable> List<T> findByComponent(Class clase, String columna, Object valor) throws DAOException;
     
     public boolean excecuteNativeDDLSQL(String sqlNative) throws DAOException;
 }

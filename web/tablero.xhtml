@@ -6,6 +6,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
     <h:head>
+        <meta http-equiv="refresh" content="#{facesContext.externalContext.sessionMaxInactiveInterval};url=/DCS"/>
         <f:facet name="first">
             <meta http-equiv="X-UA-Compatible" content="IE=9"/>
             <title>Dashboard DCS</title>
@@ -24,7 +25,7 @@
                     <div id="mainmenu">
                         <ul id="menu">
                             <li><a style="font-weight:bold;">Welcome #{mainBean.usuario.nombre}</a></li>
-                            <li><p:commandLink value="Exit" action="#{userBean.logout}"/></li>
+                            <li><p:commandLink value="Exit" action="#{loginBean.logout}"/></li>
                         </ul>
                     </div>
                 </h:form>
@@ -54,9 +55,8 @@
                 </div>
                 <!-- /banner -->
                 <!-- Opciones -->
-                <div id="bits">
-
-                    <div class="bit">
+                <p:panelGrid columns="4" columnClasses="bit,bit,bit,bit" style="width: 100%" styleClass="bits">                                    
+                    <h:panelGroup>
                         <h4 style="font-weight:bold;">Load information</h4>
                         <div >
                             <p:commandLink onclick="PF('uploadFileDialog').show();">
@@ -66,29 +66,32 @@
                             <!--<a href="./Upload/upload.jsp"><img src="images/thumb1.png" alt="Carga Archivo" /></a>-->
                         </div>
                         <p align="center">Select for upload file information. (.xlsx or .xls)</p>
-                    </div>
-                    <div class="bit">
+                    </h:panelGroup>
+                    <h:panelGroup>
                         <h4 style="font-weight:bold;">Validate the process status</h4>
                         <div >
-                            <a ><img src="images/thumb2.png" alt="Validar Proceso" /></a>
+                            <p:commandLink onclick="PF('logDialog').show();">
+                                <img src="images/thumb2.png" alt="Validar Proceso" />
+                            </p:commandLink>
+                            <!--<a ><img src="images/thumb2.png" alt="" /></a>-->
                         </div>
                         <p align="center">See the status of the loading of information.</p>
-                    </div>
-                    <div class="bit">
+                    </h:panelGroup>
+                    <h:panelGroup>
                         <h4 style="font-weight:bold;">Dashboard DCS</h4>
                         <div >
                             <a onClick="window.open('http://kofmxqrbia01:8080/BOE/OpenDocument/opendoc/openDocument.jsp?sDocName=DashboardDL')"><img src="images/thumb5.png" alt="BOE" /></a>
                         </div>
                         <p align="center">Kof Logistics &amp; Distribution KPI's Panel</p>
-                    </div>
-                    <div class="bit">
+                    </h:panelGroup>
+                    <h:panelGroup>
                         <h4 style="font-weight:bold;">Portal BOE</h4>
                         <div >
                             <a onClick="window.open('http://kofmxqrbia01:8080/BOE/BI')"><img src="images/thumb4.png" alt="BOE" /></a>
                         </div>
                         <p align="center">Access to portal, creation and query reports</p>
-                    </div>
-                    <div class="bit">
+                    </h:panelGroup>
+                    <h:panelGroup>
                         <h4 style="font-weight:bold;">Load Distribution Fleet</h4>
                         <div >
                             <p:commandLink onclick="PF('uploadFileFlotaDialog').show();">
@@ -98,7 +101,9 @@
                             <!--<a href="./Upload/upload.jsp"><img src="images/thumb1.png" alt="Carga Archivo" /></a>-->
                         </div>
                         <p align="center">Select for upload file information. (.xlsx or .xls)</p>
-                    </div>
+                    </h:panelGroup>
+                </p:panelGrid>
+                <div id="bits">
                     <h:panelGroup rendered="#{'Administrator'.equalsIgnoreCase(mainBean.usuario.fkIdRol.rol) ? true : false}">
                         <div class='line'></div>
                         <div class='bit'>
@@ -118,7 +123,7 @@
                                 </p:commandLink>
                                 <!--<a onClick=\"window.open('alert.jsp','uploadflatfile','toolbar=no,location=no,directories=no,status=no,menubar=no,resizable=yes,left=100,top=100,width=1364,height=800,scrollbars=1')\"><img src='images/alert.png' alt='Carga Archivo' /></a>-->
                             </div>
-                            <p align='center'>Manage alert.</p>
+                            <p align='center'>Manage alerts.</p>
                         </div>
                     </h:panelGroup>                    
                     <div class="line"></div>					
@@ -141,6 +146,9 @@
         </p:dialog>
         <p:dialog closeOnEscape="true" appendTo="@(body)" id="alertsDialog" minimizable="true" maximizable="true" header="Alerts" widgetVar="alertsDialog" minHeight="200" resizable="false" width="80%" minWidth="1050" showEffect="fade" hideEffect="fade" dynamic="true" style="background-image: url('images/background_v.jpg'); background-size: 100%;">
             <ui:include src="WEB-INF/pages/alerts.xhtml"/>
+        </p:dialog>
+        <p:dialog closeOnEscape="true" appendTo="@(body)" id="logDialog" minimizable="true" maximizable="true" header="Process status" widgetVar="logDialog" minHeight="400" height="400" width="80%" minWidth="1050" showEffect="fade" hideEffect="fade" dynamic="true" style="background-image: url('images/background_v.jpg'); background-size: 100%;">
+            <ui:include src="WEB-INF/pages/logs.xhtml"/>
         </p:dialog>
         <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >
             <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />

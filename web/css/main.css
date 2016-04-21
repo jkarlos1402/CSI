@@ -72,7 +72,7 @@ h3 {
 }
 h4 { 
 	margin: 0 0 10px; 
-	font-size: 1.2em; 
+	font-size: 15px; 
 	color: #000; 
 }
 h5 {
@@ -336,7 +336,7 @@ h5 {
 .bit {
 	float: left;
 	width: 203px;
-	padding: 0 35px 0 0;
+	padding: 0 35px 0 0  !important;
 }
 .bit h4 {
 	margin: 0 0 18px;
@@ -344,7 +344,7 @@ h5 {
 .bit img { margin: 0 0 8px; }
 
 .bit p {
-	font-size: .9em;
+	font-size: 13px;
 }
 .bit.last { padding-right: 0; }
 .more { margin: 0; }
@@ -473,4 +473,15 @@ input.submit {
 
 .valorCSS{
     text-align: left;
+}
+
+.imagenIcono{
+    width: 16px;
+    height: 16px;
+    margin-bottom: -3px;
+    margin-right: 5px;
+}
+
+#bg .ui-widget-content,#bg .ui-panelgrid-cell{
+    border-style: none;
 }

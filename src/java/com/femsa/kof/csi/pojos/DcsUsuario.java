@@ -80,6 +80,18 @@ public class DcsUsuario implements Serializable {
     @OneToMany(mappedBy = "idUsuario", fetch = FetchType.EAGER)
     @Cascade(CascadeType.DELETE)
     private List<DcsAlerta> listaAlertas = new ArrayList<DcsAlerta>();
+    
+    @OneToMany(mappedBy = "idUsuario", fetch = FetchType.EAGER)
+    @Cascade(CascadeType.DELETE)
+    private List<DcsLoadLog> listaLogs = new ArrayList<DcsLoadLog>();
+
+    public List<DcsLoadLog> getListaLogs() {
+        return listaLogs;
+    }
+
+    public void setListaLogs(List<DcsLoadLog> listaLogs) {
+        this.listaLogs = listaLogs;
+    }
 
     public List<DcsAlerta> getListaAlertas() {
         return listaAlertas;

@@ -11,6 +11,7 @@ import com.femsa.kof.csi.exception.DCSException;
 import com.femsa.kof.csi.exception.DataBaseException;
 import com.femsa.kof.csi.pojos.DcsCatIndicadores;
 import com.femsa.kof.csi.pojos.DcsCatPais;
+import com.femsa.kof.csi.pojos.DcsLoadLog;
 import com.femsa.kof.csi.pojos.DcsUsuario;
 import com.femsa.kof.csi.pojos.Xtmpinddl;
 import com.femsa.kof.csi.pojos.XtmpinddlFlota;
@@ -20,7 +21,10 @@ import com.femsa.kof.csi.util.XlsAnalizer;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -35,7 +39,7 @@ import org.primefaces.event.FileUploadEvent;
  */
 @ManagedBean
 @ViewScoped
-public class LoadBean implements Serializable{
+public class LoadBean implements Serializable {
 
     private List<Xtmpinddl> listInfoCargaIndi;
 
@@ -48,6 +52,8 @@ public class LoadBean implements Serializable{
     private List<String> omittedSheetsFlota;
     private List<String> loadedSheetsFlota;
     private List<String> errorsFlota;
+
+    private String nombreArchivo;
 
     private final DcsUsuario usuario;
 
@@ -134,23 +140,24 @@ public class LoadBean implements Serializable{
         ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
         Object objeto = context.getAttribute("catalogo_paises");
         List<DcsCatPais> paises;
-        if (objeto != null) {            
+        if (objeto != null) {
             paises = (List<DcsCatPais>) objeto;
-        } else {            
+        } else {
             LoadCatalogs.load();
             paises = (List<DcsCatPais>) context.getAttribute("catalogo_paises");
         }
         Object objetoIndi = context.getAttribute("catalogo_indicadores");
         List<DcsCatIndicadores> indicadores;
-        if (objetoIndi != null) {            
+        if (objetoIndi != null) {
             indicadores = (List<DcsCatIndicadores>) objetoIndi;
-        } else {            
+        } else {
             LoadCatalogs.load();
             indicadores = (List<DcsCatIndicadores>) context.getAttribute("catalogo_indicadores");
         }
         try {
+            nombreArchivo = event.getFile().getFileName();
             XlsAnalizer analizer = new XlsAnalizer();
-            listInfoCargaIndi = analizer.analizeXlsIndi(event.getFile(), usuario, paises != null ? paises : new ArrayList<DcsCatPais>(),indicadores != null ? indicadores : new ArrayList<DcsCatIndicadores>());
+            listInfoCargaIndi = analizer.analizeXlsIndi(event.getFile(), usuario, paises != null ? paises : new ArrayList<DcsCatPais>(), indicadores != null ? indicadores : new ArrayList<DcsCatIndicadores>());
             omittedSheets = analizer.getOmittedSheets();
             loadedSheets = analizer.getLoadedSheets();
             errors = analizer.getErrors();
@@ -170,11 +177,18 @@ public class LoadBean implements Serializable{
         ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
         Boolean flagLoadIndi = (Boolean) context.getAttribute("flag_load_indi");
         GenericDAO genericDAO = null;
+        DcsLoadLog log = new DcsLoadLog();
         try {
             genericDAO = new GenericDAO();
             if (flagLoadIndi != null && !flagLoadIndi) {
                 flagLoadIndi = true;
                 context.setAttribute("flag_load_indi", flagLoadIndi);
+                log.setFechaEjecucion(new Date());
+                log.setIdUsuario(usuario);
+                log.setInicioEjecucion(new Date());
+                log.setNombreArchivo(nombreArchivo);
+                log.setNombreProceso("Load indicators");
+                log.setPais("Administrator".equalsIgnoreCase(usuario.getFkIdRol().getRol()) ? "ALL" : usuario.getPais());
                 genericDAO.excecuteNativeDDLSQL("DELETE FROM XTMPINDDL");
                 genericDAO.excecuteNativeDDLSQL("COMMIT");
                 genericDAO.saveOrUpdateAll(listInfoCargaIndi);
@@ -184,10 +198,12 @@ public class LoadBean implements Serializable{
                 ScriptAnalizer.excecuteInstructionsSQL("indicador", genericDAO);
                 flagLoadIndi = false;
                 context.setAttribute("flag_load_indi", flagLoadIndi);
+                log.setRegistrosProcesados(listInfoCargaIndi.size());
                 listInfoCargaIndi.clear();
                 errors.clear();
                 loadedSheets.clear();
                 omittedSheets.clear();
+                log.setEstatus("Successful");
                 message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Successful", "Records saved.");
             } else {
                 message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Sorry", "Process load, try more later!");
@@ -195,21 +211,35 @@ public class LoadBean implements Serializable{
         } catch (DAOException e) {
             message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Sorry", e.getMessage());
             flagLoadIndi = false;
+            log.setRegistrosProcesados(0);
+            log.setEstatus("Failed");
             context.setAttribute("flag_load_indi", flagLoadIndi);
         } catch (DataBaseException e) {
             message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Sorry", e.getMessage());
             flagLoadIndi = false;
+            log.setRegistrosProcesados(0);
+            log.setEstatus("Failed");
             context.setAttribute("flag_load_indi", flagLoadIndi);
         } catch (DCSException e) {
             message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Sorry", e.getMessage());
             flagLoadIndi = false;
+            log.setRegistrosProcesados(0);
+            log.setEstatus("Failed");
             context.setAttribute("flag_load_indi", flagLoadIndi);
         } catch (IOException e) {
             message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Sorry", e.getMessage());
             flagLoadIndi = false;
+            log.setRegistrosProcesados(0);
+            log.setEstatus("Failed");
             context.setAttribute("flag_load_indi", flagLoadIndi);
         } finally {
             if (genericDAO != null) {
+                log.setFinEjecucion(new Date());
+                try {
+                    genericDAO.saveOrUpdate(log);
+                } catch (DAOException ex) {
+                    Logger.getLogger(LoadBean.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 genericDAO.closeDAO();
             }
         }
@@ -221,16 +251,15 @@ public class LoadBean implements Serializable{
         ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
         Object objeto = context.getAttribute("catalogo_paises");
         List<DcsCatPais> paises;
-        if (objeto != null) {            
+        if (objeto != null) {
             paises = (List<DcsCatPais>) objeto;
-            System.out.println(paises.size());
-        } else {            
+        } else {
             LoadCatalogs.load();
             paises = (List<DcsCatPais>) context.getAttribute("catalogo_paises");
         }
         try {
             XlsAnalizer analizer = new XlsAnalizer();
-            listInfoCargaFlota = analizer.analizeXlsFlota(event.getFile(), usuario,paises != null ? paises : new ArrayList<DcsCatPais>());
+            listInfoCargaFlota = analizer.analizeXlsFlota(event.getFile(), usuario, paises != null ? paises : new ArrayList<DcsCatPais>());
             omittedSheetsFlota = analizer.getOmittedSheets();
             loadedSheetsFlota = analizer.getLoadedSheets();
             errorsFlota = analizer.getErrors();
@@ -250,11 +279,18 @@ public class LoadBean implements Serializable{
         ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
         Boolean flagLoadFlota = (Boolean) context.getAttribute("flag_load_flota");
         GenericDAO genericDAO = null;
+        DcsLoadLog log = new DcsLoadLog();
         try {
             genericDAO = new GenericDAO();
             if (flagLoadFlota != null && !flagLoadFlota) {
                 flagLoadFlota = true;
                 context.setAttribute("flag_load_flota", flagLoadFlota);
+                log.setFechaEjecucion(new Date());
+                log.setIdUsuario(usuario);
+                log.setInicioEjecucion(new Date());
+                log.setNombreArchivo(nombreArchivo);
+                log.setNombreProceso("Load Distribution Fleet");
+                log.setPais("Administrator".equalsIgnoreCase(usuario.getFkIdRol().getRol()) ? "ALL" : usuario.getPais());
                 genericDAO.excecuteNativeDDLSQL("DELETE FROM XTMPINDDL_FLOTA");
                 genericDAO.excecuteNativeDDLSQL("COMMIT");
                 genericDAO.saveOrUpdateAll(listInfoCargaFlota);
@@ -264,10 +300,12 @@ public class LoadBean implements Serializable{
                 ScriptAnalizer.excecuteInstructionsSQL("flota", genericDAO);
                 flagLoadFlota = false;
                 context.setAttribute("flag_load_flota", flagLoadFlota);
+                log.setRegistrosProcesados(listInfoCargaFlota.size());
                 listInfoCargaFlota.clear();
                 errorsFlota.clear();
                 loadedSheetsFlota.clear();
                 omittedSheetsFlota.clear();
+                log.setEstatus("Successful");
                 message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Successful", "Records saved.");
             } else {
                 message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Sorry", "Process load, try more later!");
@@ -275,21 +313,35 @@ public class LoadBean implements Serializable{
         } catch (DAOException e) {
             message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Sorry", e.getMessage());
             flagLoadFlota = false;
+            log.setRegistrosProcesados(0);
+            log.setEstatus("Failed");
             context.setAttribute("flag_load_flota", flagLoadFlota);
         } catch (DataBaseException e) {
             message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Sorry", e.getMessage());
             flagLoadFlota = false;
+            log.setRegistrosProcesados(0);
+            log.setEstatus("Failed");
             context.setAttribute("flag_load_flota", flagLoadFlota);
         } catch (DCSException e) {
             message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Sorry", e.getMessage());
             flagLoadFlota = false;
+            log.setRegistrosProcesados(0);
+            log.setEstatus("Failed");
             context.setAttribute("flag_load_flota", flagLoadFlota);
         } catch (IOException e) {
             message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Sorry", e.getMessage());
             flagLoadFlota = false;
+            log.setRegistrosProcesados(0);
+            log.setEstatus("Failed");
             context.setAttribute("flag_load_flota", flagLoadFlota);
         } finally {
             if (genericDAO != null) {
+                log.setFinEjecucion(new Date());
+                try {
+                    genericDAO.saveOrUpdate(log);
+                } catch (DAOException ex) {
+                    Logger.getLogger(LoadBean.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 genericDAO.closeDAO();
             }
         }

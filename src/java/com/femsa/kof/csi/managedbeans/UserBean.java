@@ -26,9 +26,7 @@ import javax.servlet.http.HttpSession;
 @ManagedBean(name = "userBean")
 @ViewScoped
 public class UserBean implements Serializable {
-
-    private String user;
-    private String password;
+    
 
     private DcsUsuario usuarioNuevo = new DcsUsuario();
     private DcsUsuario usuarioSelected;
@@ -167,39 +165,7 @@ public class UserBean implements Serializable {
      */
     public void setRolSelected(DcsRol rolSelected) {
         this.rolSelected = rolSelected;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getUser() {
-        return user;
-    }
-
-    /**
-     *
-     * @param user
-     */
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getPassword() {
-        return password;
-    }
-
-    /**
-     *
-     * @param password
-     */
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    }    
 
     /**
      *
@@ -247,71 +213,7 @@ public class UserBean implements Serializable {
      */
     public void setUsuariosAll(List<DcsUsuario> usuariosAll) {
         this.usuariosAll = usuariosAll;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String logIn() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        GenericDAO genericDAO = null;
-        DcsUsuario usuario;
-        String respuesta = "index";
-        try {
-            genericDAO = new GenericDAO();
-            List<DcsUsuario> usuarios = genericDAO.findByComponent(DcsUsuario.class, "usuario", user);
-            if (usuarios != null && !usuarios.isEmpty() && usuarios.get(0).getPassword().equals(password)) {
-                usuario = usuarios.get(0);
-                HttpSession httpSession = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
-                if (usuario.getLastlogin() == null) {
-                    httpSession.setAttribute("first_session_user", true);
-                } else {
-                    httpSession.setAttribute("first_session_user", false);
-                }
-                usuario.setIntentos(0);
-                usuario.setLastlogin(new Date());
-                genericDAO.saveOrUpdate(usuario);
-                httpSession.setAttribute("session_user", usuario);
-                respuesta = "correct";
-            } else if (usuarios != null && !usuarios.isEmpty()) {
-                usuario = usuarios.get(0);
-                usuario.setIntentos(usuario.getIntentos() + 1);
-                if (usuario.getIntentos() == 3) {
-                    usuario.setEstatus(false);
-                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Attention: The user has been blocked, number of attempts exceeded, Contact the administrator", ""));
-                } else {
-                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: User or password incorrect", ""));
-                }
-                genericDAO.saveOrUpdate(usuario);
-            } else {
-                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: User or password incorrect", ""));
-            }
-        } catch (DAOException e) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MSG_ERROR_TITULO, e);
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: " + e.getMessage(), ""));
-        } catch (DataBaseException e) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MSG_ERROR_TITULO, e);
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: " + e.getMessage(), ""));
-        } finally {
-            if (genericDAO != null) {
-                genericDAO.closeDAO();
-            }
-        }
-        return respuesta;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String logout() {
-        HttpSession httpSession = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-        if (httpSession != null) {
-            httpSession.invalidate();
-        }
-        return "index";
-    }
+    }   
 
     /**
      *
