@@ -71,7 +71,7 @@ public class DcsUsuario implements Serializable {
     @JoinTable(name = "DCS_USUARIO_PROYECTO", joinColumns = {
         @JoinColumn(name = "PK_USUARIO", referencedColumnName = "PK_USUARIO")}, inverseJoinColumns = {
         @JoinColumn(name = "ID_PROYECTO", referencedColumnName = "ID_PROYECTO")})
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<DcsCatProyecto> dcsCatProyectoList;
     @JoinColumn(name = "FK_ID_ROL")
     @ManyToOne(fetch = FetchType.EAGER)
@@ -224,4 +224,12 @@ public class DcsUsuario implements Serializable {
         return nombre;
     }
 
+    public boolean hasProject(Integer idProyecto){       
+       int index = dcsCatProyectoList.indexOf(new DcsCatProyecto(idProyecto));
+       if(index != -1){
+           return true;
+       }else{
+           return false;
+       }
+    }
 }

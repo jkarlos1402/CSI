@@ -191,11 +191,12 @@ public class LoadBean implements Serializable {
                 log.setPais("Administrator".equalsIgnoreCase(usuario.getFkIdRol().getRol()) ? "ALL" : usuario.getPais());
                 genericDAO.excecuteNativeDDLSQL("DELETE FROM XTMPINDDL");
                 genericDAO.excecuteNativeDDLSQL("COMMIT");
+                System.out.println(listInfoCargaIndi.size());
                 genericDAO.saveOrUpdateAll(listInfoCargaIndi);
                 genericDAO.excecuteNativeDDLSQL("DROP SEQUENCE DCS_SEQ_XTMPINDDL");
                 genericDAO.excecuteNativeDDLSQL("CREATE SEQUENCE DCS_SEQ_XTMPINDDL INCREMENT BY 1 START WITH 1");
                 //Se ejecutan scripts sql
-                ScriptAnalizer.excecuteInstructionsSQL("indicador", genericDAO);
+                ScriptAnalizer.excecuteInstructionsSQL("indicador", genericDAO, log);
                 flagLoadIndi = false;
                 context.setAttribute("flag_load_indi", flagLoadIndi);
                 log.setRegistrosProcesados(listInfoCargaIndi.size());
@@ -203,7 +204,9 @@ public class LoadBean implements Serializable {
                 errors.clear();
                 loadedSheets.clear();
                 omittedSheets.clear();
-                log.setEstatus("Successful");
+                if (log.getEstatus() == null) {
+                    log.setEstatus("Successful");
+                }
                 message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Successful", "Records saved.");
             } else {
                 message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Sorry", "Process load, try more later!");
@@ -258,6 +261,7 @@ public class LoadBean implements Serializable {
             paises = (List<DcsCatPais>) context.getAttribute("catalogo_paises");
         }
         try {
+            nombreArchivo = event.getFile().getFileName();
             XlsAnalizer analizer = new XlsAnalizer();
             listInfoCargaFlota = analizer.analizeXlsFlota(event.getFile(), usuario, paises != null ? paises : new ArrayList<DcsCatPais>());
             omittedSheetsFlota = analizer.getOmittedSheets();
@@ -297,7 +301,7 @@ public class LoadBean implements Serializable {
                 genericDAO.excecuteNativeDDLSQL("DROP SEQUENCE DCS_SEQ_XTMPINDDL_FLOTA");
                 genericDAO.excecuteNativeDDLSQL("CREATE SEQUENCE DCS_SEQ_XTMPINDDL_FLOTA INCREMENT BY 1 START WITH 1");
                 //Se ejecutan scripts sql
-                ScriptAnalizer.excecuteInstructionsSQL("flota", genericDAO);
+                ScriptAnalizer.excecuteInstructionsSQL("flota", genericDAO, log);
                 flagLoadFlota = false;
                 context.setAttribute("flag_load_flota", flagLoadFlota);
                 log.setRegistrosProcesados(listInfoCargaFlota.size());
@@ -305,7 +309,9 @@ public class LoadBean implements Serializable {
                 errorsFlota.clear();
                 loadedSheetsFlota.clear();
                 omittedSheetsFlota.clear();
-                log.setEstatus("Successful");
+                if (log.getEstatus() == null) {
+                    log.setEstatus("Successful");
+                }
                 message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Successful", "Records saved.");
             } else {
                 message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Sorry", "Process load, try more later!");

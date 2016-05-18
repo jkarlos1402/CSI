@@ -56,7 +56,7 @@
                 <!-- /banner -->
                 <!-- Opciones -->
                 <p:panelGrid columns="4" columnClasses="bit,bit,bit,bit" style="width: 100%" styleClass="bits">                                    
-                    <h:panelGroup>
+                    <h:panelGroup rendered="#{mainBean.usuario.hasProject(1)}">
                         <h4 style="font-weight:bold;">Load information</h4>
                         <div >
                             <p:commandLink onclick="PF('uploadFileDialog').show();">
@@ -67,7 +67,7 @@
                         </div>
                         <p align="center">Select for upload file information. (.xlsx or .xls)</p>
                     </h:panelGroup>
-                    <h:panelGroup>
+                    <h:panelGroup rendered="#{mainBean.usuario.hasProject(1)}">
                         <h4 style="font-weight:bold;">Validate the process status</h4>
                         <div >
                             <p:commandLink onclick="PF('logDialog').show();">
@@ -77,21 +77,21 @@
                         </div>
                         <p align="center">See the status of the loading of information.</p>
                     </h:panelGroup>
-                    <h:panelGroup>
+                    <h:panelGroup rendered="#{mainBean.usuario.hasProject(1)}">
                         <h4 style="font-weight:bold;">Dashboard DCS</h4>
                         <div >
                             <a onClick="window.open('http://kofmxqrbia01:8080/BOE/OpenDocument/opendoc/openDocument.jsp?sDocName=DashboardDL')"><img src="images/thumb5.png" alt="BOE" /></a>
                         </div>
                         <p align="center">Kof Logistics &amp; Distribution KPI's Panel</p>
                     </h:panelGroup>
-                    <h:panelGroup>
+                    <h:panelGroup rendered="#{mainBean.usuario.hasProject(1)}">
                         <h4 style="font-weight:bold;">Portal BOE</h4>
                         <div >
                             <a onClick="window.open('http://kofmxqrbia01:8080/BOE/BI')"><img src="images/thumb4.png" alt="BOE" /></a>
                         </div>
                         <p align="center">Access to portal, creation and query reports</p>
                     </h:panelGroup>
-                    <h:panelGroup>
+                    <h:panelGroup rendered="#{mainBean.usuario.hasProject(1)}">
                         <h4 style="font-weight:bold;">Load Distribution Fleet</h4>
                         <div >
                             <p:commandLink onclick="PF('uploadFileFlotaDialog').show();">
@@ -102,6 +102,22 @@
                         </div>
                         <p align="center">Select for upload file information. (.xlsx or .xls)</p>
                     </h:panelGroup>
+                    <h:panelGroup id="panelGroupOff" rendered="#{mainBean.usuario.hasProject(2)}">
+                        <h4 style="font-weight:bold;">Order fulfillment</h4>
+                        <div >
+                            <p:commandLink onclick="PF('blockLinkOff').show();PF('offDialog').show();" id="linkOffNotas" oncomplete="PF('blockLinkOff').hide()">
+                                <img src="images/thumb5.png"/>
+                            </p:commandLink>
+                            <!--<a onClick="window.open('upload_flota.jsp', 'uploadflatfile', 'toolbar=no,location=no,directories=no,status=no,menubar=no,resizable=YES,left=auto,top=auto,width=498,height=230')"><img src="images/thumb1.png" alt="Carga Archivo" /></a>-->
+                            <!--<a href="./Upload/upload.jsp"><img src="images/thumb1.png" alt="Carga Archivo" /></a>-->
+                        </div>
+                        <p align="center">Notes</p>
+                    </h:panelGroup>
+                    <p:blockUI block="linkOffNotas" widgetVar="blockLinkOff">                        
+                        <p style="font-size:14px; color: black;">
+                            Cargando...
+                        </p> 
+                    </p:blockUI>
                 </p:panelGrid>
                 <div id="bits">
                     <h:panelGroup rendered="#{'Administrator'.equalsIgnoreCase(mainBean.usuario.fkIdRol.rol) ? true : false}">
@@ -149,6 +165,9 @@
         </p:dialog>
         <p:dialog closeOnEscape="true" appendTo="@(body)" id="logDialog" minimizable="true" maximizable="true" header="Process status" widgetVar="logDialog" minHeight="400" height="400" width="80%" minWidth="1050" showEffect="fade" hideEffect="fade" dynamic="true" style="background-image: url('images/background_v.jpg'); background-size: 100%;">
             <ui:include src="WEB-INF/pages/logs.xhtml"/>
+        </p:dialog>
+        <p:dialog closeOnEscape="true" appendTo="@(body)" id="offDialog" minimizable="true" maximizable="true" header="Notes" widgetVar="offDialog" minHeight="400" height="400" width="80%" minWidth="1050" showEffect="fade" hideEffect="fade" dynamic="true" style="background-image: url('images/background_v.jpg'); background-size: 100%;">
+            <ui:include src="WEB-INF/pages/orderfulfillment/notas.xhtml"/>
         </p:dialog>
         <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >
             <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />

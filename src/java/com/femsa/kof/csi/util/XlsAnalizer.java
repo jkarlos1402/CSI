@@ -171,7 +171,7 @@ public class XlsAnalizer {
                 if (cell == null || cell.getCellType() == Cell.CELL_TYPE_STRING) {
                     if (indicadores.contains(new DcsCatIndicadores(cell != null ? cell.getStringCellValue().trim() : null))) {
                         indi.setIndicador(cell != null ? cell.getStringCellValue().trim() : null);
-                    }else {
+                    } else {
                         errors.add("Approximately " + Character.toString((char) (65 + 2)) + "" + (numRow + 1) + " cell in " + sheetName + " sheet have a invalid value [" + cell + "], indicator not found.");
                         cargas.clear();
                         break;
@@ -199,16 +199,16 @@ public class XlsAnalizer {
                     break;
                 }
                 cell = row.getCell(4);
-                if (cell == null || cell.getCellType() == Cell.CELL_TYPE_STRING) {
-                    indi.setCentro(cell != null ? cell.getStringCellValue().trim() : null);
+                if (cell == null || cell.getCellType() == Cell.CELL_TYPE_STRING || cell.getCellType() == Cell.CELL_TYPE_BLANK) {
+                    indi.setCentro(cell != null && cell.getCellType() != Cell.CELL_TYPE_BLANK ? cell.getStringCellValue().trim() : null);
                 } else {
                     errors.add("Approximately " + Character.toString((char) (65 + 4)) + "" + (numRow + 1) + " cell in " + sheetName + " sheet have a invalid value [" + cell + "].");
                     cargas.clear();
                     break;
                 }
                 cell = row.getCell(5);
-                if (cell == null || cell.getCellType() == Cell.CELL_TYPE_STRING) {
-                    indi.setRuta(cell != null ? cell.getStringCellValue().trim() : null);
+                if (cell == null || cell.getCellType() == Cell.CELL_TYPE_STRING || cell.getCellType() == Cell.CELL_TYPE_BLANK) {
+                    indi.setRuta(cell != null && cell.getCellType() != Cell.CELL_TYPE_BLANK ? cell.getStringCellValue().trim() : null);
                 } else {
                     errors.add("Approximately " + Character.toString((char) (65 + 5)) + "" + (numRow + 1) + " cell in " + sheetName + " sheet have a invalid value [" + cell + "].");
                     cargas.clear();

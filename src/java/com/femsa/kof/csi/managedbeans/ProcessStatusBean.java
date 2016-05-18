@@ -42,8 +42,8 @@ public class ProcessStatusBean {
         GenericDAO genericDAO = null;
         try {
             genericDAO = new GenericDAO();
-            if ("Administrator".equalsIgnoreCase(usuario.getFkIdRol().getRol())) {
-                listaCargas = genericDAO.findAll(DcsLoadLog.class);
+            if ("Administrator".equalsIgnoreCase(usuario.getFkIdRol().getRol())) {                
+                listaCargas = genericDAO.findByQuery(DcsLoadLog.class,"select log from DcsLoadLog log order by log.fechaEjecucion desc");
             } else {
                 listaCargas = genericDAO.findByComponent(DcsLoadLog.class, "idUsuario", usuario);
             }
@@ -78,7 +78,7 @@ public class ProcessStatusBean {
         this.dateFormat = dateFormat;
     }
 
-    public List<DcsLoadLog> getListaCargas() {
+    public List<DcsLoadLog> getListaCargas() {        
         return listaCargas;
     }
 
@@ -91,8 +91,8 @@ public class ProcessStatusBean {
         GenericDAO genericDAO = null;
         try {
             genericDAO = new GenericDAO();
-            if ("Administrator".equalsIgnoreCase(usuario.getFkIdRol().getRol())) {
-                listaCargas = genericDAO.findAll(DcsLoadLog.class);
+            if ("Administrator".equalsIgnoreCase(usuario.getFkIdRol().getRol())) {                
+                listaCargas = genericDAO.findByQuery(DcsLoadLog.class,"select log from DcsLoadLog log order by log.fechaEjecucion desc ");               
             } else {
                 listaCargas = genericDAO.findByComponent(DcsLoadLog.class, "idUsuario", usuario);
             }

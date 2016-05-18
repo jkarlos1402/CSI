@@ -37,8 +37,14 @@
                     <p:selectOneMenu id="userRol" immediate="true" value="#{userBean.usuarioNuevo.fkIdRol}" style="width:125px" converter="genericConverter" required="true" label="Rol">
                         <f:selectItem itemLabel="Select One" itemValue="" />
                         <f:selectItems value="#{userBean.catRoles}" />                             
-                    </p:selectOneMenu>
-                    <f:facet name="footer">
+                    </p:selectOneMenu>                                                            
+                </h:panelGrid>
+                <h:panelGrid columns="2">
+                    
+                    <p:outputLabel for="userProjects" value="Projects:" />
+                    <p:pickList id="userProjects" value="#{userBean.catProyectos}" var="projectUser" itemLabel="#{projectUser}" itemValue="#{projectUser}" converter="genericConverter"/>
+                    
+                    <f:facet name="footer">                         
                         <h:panelGrid columns="3" cellspacing="10px">
                             <p:commandButton value="Save" update="formUsers" actionListener="#{userBean.saveUser}">
                                 <p:confirm message="Are you sure?" header="Save user"/>
@@ -52,7 +58,7 @@
                 </h:panelGrid>
                 <p:separator/>
                 <h:panelGrid columns="1"  cellspacing="10px">
-                    <p:dataTable widgetVar="tableUsers" id="tableUsers" var="userTable" value="#{userBean.usuariosAll}" rowKey="#{userTable.pkUsuario}" selection="#{userBean.usuarioSelected}" selectionMode="single" paginator="true" rows="10">
+                    <p:dataTable widgetVar="tableUsers" id="tableUsers" var="userTable" value="#{userBean.usuariosAll}" rowKey="#{userTable.pkUsuario}" selection="#{userBean.usuarioSelected}" selectionMode="single" paginator="true" rows="4">
                         <p:column headerText="User">
                             <h:outputText value="#{userTable.usuario}"/>
                         </p:column>

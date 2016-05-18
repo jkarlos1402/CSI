@@ -6,7 +6,6 @@
 package com.femsa.kof.csi.pojos;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -32,7 +31,7 @@ public class DcsCatProyecto implements Serializable {
     @Id
     @Basic(optional = false)
     @Column(name = "ID_PROYECTO")
-    private BigDecimal idProyecto;
+    private Integer idProyecto;
     @Column(name = "NOMBRE_PROYECTO")
     private String nombreProyecto;
     @Column(name = "DESCRIPCION_PROYECTO")
@@ -45,15 +44,15 @@ public class DcsCatProyecto implements Serializable {
     public DcsCatProyecto() {
     }
 
-    public DcsCatProyecto(BigDecimal idProyecto) {
+    public DcsCatProyecto(Integer idProyecto) {
         this.idProyecto = idProyecto;
     }
 
-    public BigDecimal getIdProyecto() {
+    public Integer getIdProyecto() {
         return idProyecto;
     }
 
-    public void setIdProyecto(BigDecimal idProyecto) {
+    public void setIdProyecto(Integer idProyecto) {
         this.idProyecto = idProyecto;
     }
 
@@ -111,7 +110,7 @@ public class DcsCatProyecto implements Serializable {
 
     @Override
     public String toString() {
-        return "com.femsa.kof.csi.pojos.DcsCatProyecto[ idProyecto=" + idProyecto + " ]";
+        return descripcionProyecto;
     }
     
 }

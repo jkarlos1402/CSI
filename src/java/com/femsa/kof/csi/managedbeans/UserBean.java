@@ -9,7 +9,6 @@ import com.femsa.kof.csi.pojos.DcsRol;
 import com.femsa.kof.csi.pojos.DcsUsuario;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,7 +16,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpSession;
+import org.primefaces.model.DualListModel;
 
 /**
  *
@@ -26,7 +25,6 @@ import javax.servlet.http.HttpSession;
 @ManagedBean(name = "userBean")
 @ViewScoped
 public class UserBean implements Serializable {
-    
 
     private DcsUsuario usuarioNuevo = new DcsUsuario();
     private DcsUsuario usuarioSelected;
@@ -38,11 +36,7 @@ public class UserBean implements Serializable {
     private List<DcsRol> catRoles = new ArrayList<DcsRol>();
     private DcsRol rolSelected;
 
-    private List<DcsCatProyecto> catProyectos = new ArrayList<DcsCatProyecto>();
-    private DcsCatProyecto proyectoSelected;
-
-    private String error;
-    private static final String MSG_ERROR_TITULO = "Mensaje de error...";
+    private DualListModel<DcsCatProyecto> catProyectos;
 
     /**
      *
@@ -56,9 +50,11 @@ public class UserBean implements Serializable {
         try {
             genericDAO = new GenericDAO();
             catRoles = genericDAO.findAll(DcsRol.class);
-            catProyectos = genericDAO.findAll(DcsCatProyecto.class);
+            List<DcsCatProyecto> sourceProyecto = genericDAO.findAll(DcsCatProyecto.class);
+            List<DcsCatProyecto> targetProyecto = new ArrayList<DcsCatProyecto>();
+            catProyectos = new DualListModel(sourceProyecto, targetProyecto);
             catPaises = genericDAO.findAll(DcsCatPais.class);
-            usuariosAll = genericDAO.findAll(DcsUsuario.class);
+            usuariosAll = genericDAO.findAll(DcsUsuario.class);            
         } catch (DAOException ex) {
             Logger.getLogger(UserBean.class.getName()).log(Level.SEVERE, null, ex);
         } catch (DataBaseException ex) {
@@ -69,6 +65,32 @@ public class UserBean implements Serializable {
             }
         }
 
+    }
+
+    public DualListModel<DcsCatProyecto> getCatProyectos() {
+        GenericDAO genericDAO = null;
+        try {
+            genericDAO = new GenericDAO();
+            List<DcsCatProyecto> sourceProyecto = genericDAO.findAll(DcsCatProyecto.class);
+            List<DcsCatProyecto> targetProyecto = catProyectos.getTarget();
+            for (DcsCatProyecto proyecto : targetProyecto) {
+                sourceProyecto.remove(proyecto);
+            }
+            catProyectos.setSource(sourceProyecto);
+        } catch (DataBaseException ex) {
+            Logger.getLogger(UserBean.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (DAOException ex) {
+            Logger.getLogger(UserBean.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (genericDAO != null) {
+                genericDAO.closeDAO();
+            }
+        }
+        return catProyectos;
+    }
+
+    public void setCatProyectos(DualListModel<DcsCatProyecto> catProyectos) {
+        this.catProyectos = catProyectos;
     }
 
     public DcsCatPais getPaisSelected() {
@@ -85,54 +107,6 @@ public class UserBean implements Serializable {
 
     public void setCatPaises(List<DcsCatPais> catPaises) {
         this.catPaises = catPaises;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getError() {
-        return error;
-    }
-
-    /**
-     *
-     * @param error
-     */
-    public void setError(String error) {
-        this.error = error;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public List<DcsCatProyecto> getCatProyectos() {
-        return catProyectos;
-    }
-
-    /**
-     *
-     * @param catProyectos
-     */
-    public void setCatProyectos(List<DcsCatProyecto> catProyectos) {
-        this.catProyectos = catProyectos;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public DcsCatProyecto getProyectoSelected() {
-        return proyectoSelected;
-    }
-
-    /**
-     *
-     * @param proyectoSelected
-     */
-    public void setProyectoSelected(DcsCatProyecto proyectoSelected) {
-        this.proyectoSelected = proyectoSelected;
     }
 
     /**
@@ -165,7 +139,7 @@ public class UserBean implements Serializable {
      */
     public void setRolSelected(DcsRol rolSelected) {
         this.rolSelected = rolSelected;
-    }    
+    }
 
     /**
      *
@@ -213,7 +187,7 @@ public class UserBean implements Serializable {
      */
     public void setUsuariosAll(List<DcsUsuario> usuariosAll) {
         this.usuariosAll = usuariosAll;
-    }   
+    }
 
     /**
      *
@@ -257,6 +231,15 @@ public class UserBean implements Serializable {
                 usuarioOld.setPassword(usuarioNuevo.getPassword());
                 usuarioOld.setPkUsuario(usuarioNuevo.getPkUsuario());
                 usuarioOld.setUsuario(usuarioNuevo.getUsuario());
+                if (usuarioNuevo.getDcsCatProyectoList() == null) {
+                    usuarioNuevo.setDcsCatProyectoList(new ArrayList<DcsCatProyecto>());
+                } else {
+                    usuarioNuevo.getDcsCatProyectoList().clear();
+                }
+                for (int i = 0; i < catProyectos.getTarget().size(); i++) {
+                    usuarioNuevo.getDcsCatProyectoList().add(catProyectos.getTarget().get(i));
+                }
+                usuarioOld.setDcsCatProyectoList(usuarioNuevo.getDcsCatProyectoList());
                 genericDAO.saveOrUpdate(usuarioOld);
                 refreshUsers();
                 message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Successful", "User saved");
@@ -284,6 +267,10 @@ public class UserBean implements Serializable {
         usuarioNuevo = new DcsUsuario();
         usuarioSelected = null;
         paisSelected = null;
+        for (int i = 0; i < catProyectos.getTarget().size(); i++) {
+            catProyectos.getSource().add(catProyectos.getTarget().get(i));
+        }
+        catProyectos.getTarget().clear();
     }
 
     /**
@@ -301,6 +288,14 @@ public class UserBean implements Serializable {
         usuarioNuevo.setIntentos(usuarioSelected.getIntentos());
         usuarioNuevo.setLastlogin(usuarioSelected.getLastlogin());
         paisSelected = catPaises.get(catPaises.indexOf(new DcsCatPais(usuarioSelected.getPais())));
+        catProyectos.getTarget().clear();
+        if (usuarioSelected.getDcsCatProyectoList() != null && !usuarioSelected.getDcsCatProyectoList().isEmpty()) {
+            Object[] proyectosT = usuarioSelected.getDcsCatProyectoList().toArray();
+            for (int i = 0; i < usuarioSelected.getDcsCatProyectoList().size(); i++) {
+                catProyectos.getTarget().add((DcsCatProyecto) proyectosT[i]);
+                catProyectos.getSource().remove((DcsCatProyecto) proyectosT[i]);
+            }
+        }
     }
 
     /**

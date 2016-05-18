@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <ui:composition>              
+            <h:form id="formTablaOrderNotas">
+                <p:growl showDetail="true" id="msgOrderNotas"/>            
+                <p:tooltip showEffect="fade" hideEffect="fade"/>            
+                <p:panel id="panelOrderNotas" widgetVar="panelOrderNotas">
+                    <p:toolbar id="toolBarOrderNotas">
+                        <f:facet name="left">                        
+                            <p:commandButton widgetVar="btnNuevoOrderNotas" icon="fa fa-fw fa-file-o" title="New" actionListener="#{notasBean.openDialogNota('dialogFormOrderNotas',2)}" update="dialogFormOrderNotas,panelOrderNotas" oncomplete="PF('dialogFormOrderNotas').show();" />                         
+                            <p:commandButton widgetVar="btnEditarOrderNotas" icon="fa fa-fw fa-edit" title="Edit" actionListener="#{notasBean.openDialogNota('dialogFormOrderNotas',1)}" update="msgOrderNotas" />
+                            <p:commandButton widgetVar="btnEliminarOrderNotas" icon="fa fa-fw fa-trash-o" id="bntEliminaOrderNotasTool" title="Delete" actionListener="#{notasBean.eliminaNota}" update="msgOrderNotas,tablaOrderNotas">
+                                <p:confirm header="Delete" message="Are you sure?"/>
+                            </p:commandButton>                        
+                            <span class="ui-separator">
+                                <span class="ui-icon ui-icon-grip-dotted-vertical"/>
+                            </span>
+                            <p:commandButton widgetVar="btnDetalleOrderNotas" icon="fa fa-fw fa-eye" title="See detail" actionListener="#{notasBean.openDialogNota('dialogDetalleOrderNotas',3)}" update="msgOrderNotas"/>
+                        </f:facet>                    
+                    </p:toolbar>
+                    <p:contextMenu for="tablaOrderNotas">
+                        <p:menuitem value="See detail" icon="fa fa-fw fa-eye"  actionListener="#{notasBean.openDialogNota('dialogDetalleOrderNotas',3)}" />
+                        <p:menuitem value="Edit" icon="fa fa-fw fa-edit"  actionListener="#{notasBean.openDialogNota('dialogFormOrderNotas',1)}" update="msgOrderNotas"/>
+                        <p:menuitem id="bntEliminaOrderNotas" value="Delete" icon="fa fa-fw fa-trash-o"  actionListener="#{notasBean.eliminaNota}"  update="msgOrderNotas,tablaOrderNotas">
+                            <p:confirm header="Delete" message="Are you sure?"/>                        
+                        </p:menuitem>
+                    </p:contextMenu>
+                    <p:dataTable id="tablaOrderNotas" var="nota" value="#{notasBean.listNotas}" widgetVar="tablaOrderNotas" selectionMode="single" rowKey="#{nota.idnota}" selection="#{notasBean.notaSeleccionada}" style="margin-top: 10px;" sortMode="multiple" paginator="true" rows="10" paginatorPosition="bottom" paginatorAlwaysVisible="false">
+                        <f:facet name="header">
+                            <p:outputPanel style="text-align: right;">
+                                <p:outputLabel value="Buscar:" for="globalFilter" />
+                                <p:inputText id="globalFilter" onkeyup="PF('tablaOrderNotas').filter()" style="width:150px" placeholder="Keywords"/>
+                            </p:outputPanel>
+                        </f:facet>
+                        <p:column headerText="Month" filterBy="#{nota.mes}" sortBy="#{nota.mes}">
+                            <h:outputText value="#{nota.mes}" />
+                        </p:column>
+                        <p:column headerText="Country" filterBy="#{nota.pais}" sortBy="#{nota.pais}">
+                            <h:outputText value="#{nota.pais}" />
+                        </p:column>
+                        <p:column headerText="Note" filterBy="#{nota.nota}" sortBy="#{nota.nota}">
+                            <h:outputText value="#{nota.nota}" />
+                        </p:column>    
+                        <p:ajax event="rowSelect" listener="#{notasBean.selectNota}" update="dialogFormOrderNotas,dialogDetalleOrderNotas"/>
+                        <p:ajax event="contextMenu"  listener="#{notasBean.selectNota}" update="dialogFormOrderNotas,dialogDetalleOrderNotas"/> 
+                    </p:dataTable>                
+                    <p:blockUI block="tablaOrderNotas" trigger="bntEliminaOrderNotas,bntEliminaOrderNotasTool" widgetVar="blockTabla">
+                        <p:graphicImage  value="/images/loading.gif"/>
+                        <p style="font-size:14px; color: black;">
+                            Cargando...
+                        </p> 
+                    </p:blockUI>  
+                </p:panel>                                     
+            </h:form>
+            <p:dialog modal="true" header="Note" appendTo="@(body)" closeOnEscape="true" id="dialogFormOrderNotas" widgetVar="dialogFormOrderNotas" dynamic="true" >
+                <h:form id="formOrderNotas">
+                    <p:outputPanel id="panelFormOrderNotas">
+                        <p:panelGrid columns="4">
+                            <p:outputLabel value="Month:" for="monthNota"/>
+                            <p:selectOneMenu id="monthNota" value="#{notasBean.notaNueva.mes}" required="true">
+                                <f:selectItem itemValue="" itemLabel="Select"/>
+                                <f:selectItem itemValue="ENE" itemLabel="ENE"/>
+                                <f:selectItem itemValue="FEB" itemLabel="FEB"/>
+                                <f:selectItem itemValue="MAR" itemLabel="MAR"/>
+                                <f:selectItem itemValue="ABR" itemLabel="ABR"/>
+                                <f:selectItem itemValue="MAY" itemLabel="MAY"/>
+                                <f:selectItem itemValue="JUN" itemLabel="JUN"/>
+                                <f:selectItem itemValue="JUL" itemLabel="JUL"/>
+                                <f:selectItem itemValue="AGO" itemLabel="AGO"/>
+                                <f:selectItem itemValue="SEP" itemLabel="SEP"/>
+                                <f:selectItem itemValue="OCT" itemLabel="OCT"/>
+                                <f:selectItem itemValue="NOV" itemLabel="NOV"/>
+                                <f:selectItem itemValue="DIC" itemLabel="DIC"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Country:" for="countryNota"/>
+                            <p:selectOneMenu required="true" id="countryNota" value="#{notasBean.paisSelected}" converter="genericConverter">
+                                <f:selectItem itemValue="" itemLabel="Select"/>
+                                <f:selectItems value="#{notasBean.listPaises}"/>                                
+                            </p:selectOneMenu>                            
+                        </p:panelGrid>
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="Note:" for="textoNota"/>
+                            <p:outputPanel>
+                                <p:panelGrid columns="1">
+                                    <p:inputTextarea required="true" rows="5" cols="30" counter="display" maxlength="100" counterTemplate="{0} characters remaining." autoResize="false" id="textoNota" value="#{notasBean.notaNueva.nota}"/>
+                                    <h:outputText id="display" />
+                                </p:panelGrid>
+                            </p:outputPanel>
+                        </p:panelGrid>
+                        <p:separator/> 
+                        <p:commandButton id="btnEjecutarAccion" value="Execute" update="formOrderNotas,formTablaOrderNotas" actionListener="#{notasBean.guardaNota}">
+                            <p:confirm header="Confirm" message="Are you sure?"/>                         
+                        </p:commandButton>
+                        <p:blockUI block="formOrderNotas" trigger="btnEjecutarAccion">
+                            <p:graphicImage  value="/images/loading.gif"/>
+                            <p style="font-size:14px; color: black;">
+                                Cargando...
+                            </p> 
+                        </p:blockUI> 
+                    </p:outputPanel>                
+                </h:form>
+                <p:ajax event="close" update="formOrderNotas,:formTablaOrderNotas" listener="#{notasBean.cerroDialog}" process="@this"/>
+            </p:dialog>
+            <p:dialog modal="true" header="Note" appendTo="@(body)" closeOnEscape="true" id="dialogDetalleOrderNotas" widgetVar="dialogDetalleOrderNotas" dynamic="true">            
+                <p:outputPanel>
+                    <p:panelGrid columns="2" columnClasses="etiquetaCSS,valorCSS">
+                        <h:outputText value="Month:"/>
+                        <h:outputText value="#{notasBean.notaNueva.mes}"/>
+
+                        <h:outputText value="Country:"/>
+                        <h:outputText value="#{notasBean.notaNueva.pais}"/>
+
+                        <h:outputText value="Note:"/>
+                        <h:outputText value="#{notasBean.notaNueva.nota}"/>
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog>
+        </ui:composition>
+    </h:body>
+</html>
+

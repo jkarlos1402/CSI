@@ -485,3 +485,7 @@ input.submit {
 #bg .ui-widget-content,#bg .ui-panelgrid-cell{
     border-style: none;
 }
+
+#formOrderNotas .ui-widget-content,#formOrderNotas .ui-panelgrid-cell{
+    border-style: none;
+}

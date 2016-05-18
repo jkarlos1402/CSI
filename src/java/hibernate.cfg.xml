@@ -60,5 +60,8 @@
         <mapping class="com.femsa.kof.csi.pojos.Xtmpinddl"/>
         <mapping class="com.femsa.kof.csi.pojos.XtmpinddlFlota"/>
         
+        <mapping class="com.femsa.kof.off.pojos.OffNotas"/>
+        <mapping class="com.femsa.kof.off.pojos.OffPais"/>
+        
     </session-factory>
 </hibernate-configuration>

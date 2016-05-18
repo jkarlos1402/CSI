@@ -26,6 +26,10 @@ public class GenericDAO implements GenericDaoInterface {
         session = sessionFactory.openSession();
     }
 
+    public Session getSession() {
+        return session;
+    }
+
     public void closeDAO() {
         if (session != null && sessionFactory != null) {
             session.clear();
@@ -53,7 +57,7 @@ public class GenericDAO implements GenericDaoInterface {
         Query query;
         try {
             query = session.createQuery("FROM " + clase.getName() + " c");
-            elementos = query.list();
+            elementos = query.list();            
         } catch (HibernateException e) {
             throw new DAOException("Error no identificado: " + e.getMessage());
         } finally {
@@ -120,7 +124,7 @@ public class GenericDAO implements GenericDaoInterface {
             tx = session.beginTransaction();
             session.saveOrUpdate(instance);
             tx.commit();
-        } catch (HibernateException e) {            
+        } catch (HibernateException e) {           
             String message;
             message = e.getMessage();
             throw new DAOException("Error al guardar la entidad: entidad no conocida o no válida, " + message);
@@ -155,16 +159,19 @@ public class GenericDAO implements GenericDaoInterface {
                 }
             }
             tx.commit();
-        } catch (HibernateException e) {            
+        } catch (HibernateException e) {
             throw new DAOException("Error: entidad no conocida o no válida, " + e.getMessage());
         } catch (IllegalArgumentException e2) {
             throw new DAOException("Error: entidad no conocida o no válida, " + e2.getMessage());
         } finally {
+            if (tx.wasCommitted()) {
+                session.flush();
+            }
             try {
                 if (tx.isActive()) {
                     tx.rollback();
+                    session.clear();
                 }
-                session.flush();
             } catch (Exception ex) {
                 throw new DAOException("Error: No se puede guardar el registro, " + ex.getMessage());
             }
@@ -233,7 +240,7 @@ public class GenericDAO implements GenericDaoInterface {
                 sql = session.createSQLQuery(sqlNative);
                 sql.executeUpdate();
             } else {
-                throw new DAOException("Error, can not excecute sentence: "+sqlNative);
+                throw new DAOException("Error, can not excecute sentence: " + sqlNative);
             }
         } catch (HibernateException e) {
             sql = session.createSQLQuery("ROLLBACK");

@@ -3,6 +3,7 @@ package com.femsa.kof.csi.util;
 import com.femsa.kof.csi.dao.GenericDAO;
 import com.femsa.kof.csi.exception.DAOException;
 import com.femsa.kof.csi.exception.DCSException;
+import com.femsa.kof.csi.pojos.DcsLoadLog;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -20,7 +21,7 @@ import javax.servlet.ServletContext;
  */
 public class ScriptAnalizer {
 
-    public static void excecuteInstructionsSQL(String proceso, GenericDAO genericDAO) throws DCSException, IOException {
+    public static void excecuteInstructionsSQL(String proceso, GenericDAO genericDAO,DcsLoadLog log) throws DCSException, IOException {
         ServletContext sc = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
         String contextPathResources = sc.getRealPath("");
         File directorioBase = new File(contextPathResources + File.separator + "WEB-INF" + File.separator + "scripts" + File.separator + proceso + File.separator);
@@ -68,9 +69,11 @@ public class ScriptAnalizer {
                 }
                 for (String statement : statements) {
                     try {
+//                        System.out.println("sentencia: " + statement);
                         genericDAO.excecuteNativeDDLSQL(statement);
-                    } catch (DAOException ex) {
-                        System.out.println(statement);
+                    } catch (DAOException ex) {                        
+                        genericDAO.getSession().clear();
+                        log.setEstatus("Failed");
                         Logger.getLogger(ScriptAnalizer.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
